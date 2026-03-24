@@ -3,7 +3,7 @@ import fpu_wire::*;
 module fpu_top (
     input   reset,
     input   clock,
-    input   fpu_top_in_type top_i,
+    input   fpu_top_in_type  top_i,
     output  fpu_top_out_type top_o,
     input   clear
 );

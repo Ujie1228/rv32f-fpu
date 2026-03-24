@@ -12,4 +12,14 @@ module fpu_cvt #(
 );
   timeunit 1ns; timeprecision 1ps;
 
+  fpu_cvt_f2i_var_type cvt_f2i_v;
+  fpu_cvt_i2f_var_type cvt_i2f_v;
+
+  generate
+  
+
+
+  endgenerate
+
+
 endmodule
