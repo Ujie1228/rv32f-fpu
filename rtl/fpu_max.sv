@@ -87,7 +87,7 @@ module fpu_max (
         end else if (ext_data1[32] ^ ext_data2[32]) begin  //异号
           result = (ext_data1[32]) ? data2 : data1;
         end else begin                                     //同号
-            if (extend1[32]) begin
+            if (ext_data1[32]) begin
               result = (comp) ? data2 : data1;
             end else begin
               result = (comp == 0) ? data2 : data1;

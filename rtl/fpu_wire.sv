@@ -41,6 +41,44 @@ package fpu_wire;
     logic ready;
   } fpu_top_out_type;
   
+  //*******rnd**********
+  typedef struct packed {
+    logic sig;
+    logic [10:0] expo;
+    logic [24:0] mant;
+    logic [1:0] rema;
+    logic [1:0] fmt;
+    logic [2:0] rm;
+    logic [2:0] grs;
+    logic snan;
+    logic qnan;
+    logic dbz;
+    logic infs;
+    logic zero;
+    logic diff;
+  } fpu_rnd_in_type;
+
+  typedef struct packed {
+    logic [31:0] result;
+    logic [4:0]  flags;
+  } fpu_rnd_out_type;
+
+  parameter fpu_rnd_in_type init_fpu_rnd_in = '{
+      sig : 0,
+      expo : 0,
+      mant : 0,
+      rema : 0,
+      fmt : 0,
+      rm : 0,
+      grs : 0,
+      snan : 0,
+      qnan : 0,
+      dbz : 0,
+      infs : 0,
+      zero : 0,
+      diff : 0
+  };
+
   //********lzc*********
   typedef struct packed {
     logic [31:0] data;
@@ -86,7 +124,7 @@ package fpu_wire;
     logic [2:0]  rm;
     logic [9:0]  class1;
     logic [9:0]  class2;
-  } fpu__max_in_type;
+  } fpu_max_in_type;
 
   typedef struct packed {
     logic [31:0] result;
@@ -116,7 +154,7 @@ package fpu_wire;
   typedef struct packed {
     logic [31:0] result;
     logic [4:0]  flags;
-  } fpu_cvt_out_f2i_type;
+  } fpu_cvt_f2i_out_type;
 
   typedef struct packed {
     logic [32:0] ext_data;
@@ -132,7 +170,7 @@ package fpu_wire;
     logic sign_cvt;
     logic [9:0] exponent_cvt;
     logic [58:0] mantissa_cvt;
-    logic [7:0] exponent_bias;
+    logic [9:0] exponent_bias;
     logic [32:0] mantissa_uint;
     logic [2:0] grs;
     logic odd;
@@ -226,43 +264,5 @@ package fpu_wire;
     fpu_rnd_in_type rnd;
     logic ready;
   } fpu_div_sqrt_out_type;
-
-  //*******rnd**********
-  typedef struct packed {
-    logic sig;
-    logic [10:0] expo;
-    logic [24:0] mant;
-    logic [1:0] rema;
-    logic [1:0] fmt;
-    logic [2:0] rm;
-    logic [2:0] grs;
-    logic snan;
-    logic qnan;
-    logic dbz;
-    logic infs;
-    logic zero;
-    logic diff;
-  } fpu_rnd_in_type;
-
-  typedef struct packed {
-    logic [31:0] result;
-    logic [4:0]  flags;
-  } fpu_rnd_out_type;
-
-  parameter fpu_rnd_in_type init_fpu_rnd_in = '{
-      sig : 0,
-      expo : 0,
-      mant : 0,
-      rema : 0,
-      fmt : 0,
-      rm : 0,
-      grs : 0,
-      snan : 0,
-      qnan : 0,
-      dbz : 0,
-      infs : 0,
-      zero : 0,
-      diff : 0
-  };
 
 endpackage

@@ -40,7 +40,7 @@ module fpu_cmp (
     if(rm==0)begin //FLE
       if (class1[8] | class2[8] | class1[9] | class2[9]) begin
         flags[4] = 1;
-      end else if (class1[3] | class1[4]) & (class2[3] | class2[4]) begin
+      end else if ((class1[3] | class1[4]) & (class2[3] | class2[4])) begin
         result[0] = 1;
       end else if (data1[32] ^ data2[32]) begin
         result[0] = data1[32];
@@ -53,7 +53,7 @@ module fpu_cmp (
     end else if(rm==1)begin //FLT
       if (class1[8] | class2[8] | class1[9] | class2[9]) begin
         flags[4] = 1;
-      end else if (class1[3] | class1[4]) & (class2[3] | class2[4]) begin
+      end else if ((class1[3] | class1[4]) & (class2[3] | class2[4])) begin
         result[0] = 0;
       end else if (data1[32] ^ data2[32]) begin
         result[0] = data1[32];
@@ -68,7 +68,7 @@ module fpu_cmp (
         flags[4] = 1;
       end else if (class1[9] | class2[9]) begin
         result[0] = 0;
-      end else if (class1[3] | class1[4]) & (class2[3] | class2[4]) begin
+      end else if ((class1[3] | class1[4]) & (class2[3] | class2[4])) begin
         result[0] = 1;
       end else if (data1 == data2) begin
         result[0] = 1;
