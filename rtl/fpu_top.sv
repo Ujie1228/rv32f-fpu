@@ -164,6 +164,22 @@ module fpu_top (
 
   fpu_rnd_in_type rnd;
 
+  logic busy_reg;
+
+  always_ff @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+      busy_reg <= 1'b0;
+    end else if (clear) begin
+      busy_reg <= 1'b0;
+    end else if (top_i.enable) begin
+      busy_reg <= 1'b1;
+    end else if (ready) begin
+      busy_reg <= 1'b0;
+    end
+  end
+
+  assign busy = busy_reg;
+
   always_comb begin
 
     if (top_i.enable) begin
@@ -173,7 +189,6 @@ module fpu_top (
       op = top_i.op;
       fmt = top_i.fmt;
       rm = top_i.rm;
-      busy = 1;
       finish = 0;
     end else begin
       data1 = 0;
@@ -296,14 +311,13 @@ module fpu_top (
       result = 0;
       flags = 0;
       ready = 0;
-      busy = 0;
     end
 
     top_o.result = result;
     top_o.flags  = flags;
     top_o.ready  = ready;
-    busy = 0;
-    finish = 1;
+
+    finish = ready;
     
   end
 

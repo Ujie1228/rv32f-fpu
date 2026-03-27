@@ -80,7 +80,7 @@ module fpu_decoder (
         fp_wr_o = 1;
       end else if (funct == 5'b10100) begin   //fcmp
         op.fcmp = 1;
-        fp_wr_o = 1;
+        int_wr_o = 1;
       end else if (funct == 5'b11000) begin   //fcvt_f2i
         op.fcvt_f2i = 1;
         op.fcvt_op = (rs2 == 0) ? 2'b00 : 2'b01;
@@ -96,7 +96,7 @@ module fpu_decoder (
           int_wr_o = 1;
         end else if (rm_i == 1) begin         //fclass
           op.fclass = 1;
-          fp_wr_o = 1;
+          int_wr_o = 1;
         end
       end else if (funct == 5'b11110) begin   //fmv_i2f
         op.fmv_i2f = 1;

@@ -103,7 +103,9 @@ module fpu_subsystem (
   always_comb begin
 
     req_ready = 0;
+    top_i.enable = 0;
     wr = 0;
+    int_rd_data  = 32'h0;
 
     if (use_int_rs1) begin
       top_i.data1 = int_rs1_data;
@@ -113,20 +115,13 @@ module fpu_subsystem (
   
     int_rd_data = top_o.result;
 
-    if (req_valid) begin
-      if (busy) begin
-        req_ready = 0;
-      end else begin
-        req_ready = 1;
-      end
-    end else begin
-      req_ready = 0;
+    if (req_valid & !busy) begin
+      req_ready    = 1;
+      top_i.enable = 1;
     end
 
     if (fp_wr_o & fpu_finish) begin
       wr = 1;
-    end else begin
-      wr = 0;
     end
 
   end
