@@ -1,11 +1,13 @@
 import fpu_wire::*;
 
 module fpu_top (
-    input   reset,
-    input   clock,
+    input   logic            clk,
+    input   logic            rst_n,
+    input   logic            clear,
     input   fpu_top_in_type  top_i,
     output  fpu_top_out_type top_o,
-    input   clear
+    output  logic            busy,
+    output  logic            finish
 );
   timeunit 1ns; timeprecision 1ps;
 
@@ -52,72 +54,72 @@ module fpu_top (
   fpu_rnd_out_type   rnd_o;
 
   lzc_32 lzc_32_comp_1 (
-      .data (lzc1_32_i.data),
-      .cnt  (lzc1_32_o.cnt),
-      .valid(lzc1_32_o.valid)
+    .data  (lzc1_32_i.data),
+    .cnt   (lzc1_32_o.cnt),
+    .valid (lzc1_32_o.valid)
   );
 
   lzc_32 lzc_32_comp_2 (
-      .data (lzc2_32_i.data),
-      .cnt  (lzc2_32_o.cnt),
-      .valid(lzc2_32_o.valid)
+    .data  (lzc2_32_i.data),
+    .cnt   (lzc2_32_o.cnt),
+    .valid (lzc2_32_o.valid)
   );
 
   lzc_32 lzc_32_comp_3 (
-      .data (lzc3_32_i.data),
-      .cnt  (lzc3_32_o.cnt),
-      .valid(lzc3_32_o.valid)
+    .data  (lzc3_32_i.data),
+    .cnt   (lzc3_32_o.cnt),
+    .valid (lzc3_32_o.valid)
   );
 
   lzc_32 lzc_32_comp_4 (
-      .data (lzc4_32_i.data),
-      .cnt  (lzc4_32_o.cnt),
-      .valid(lzc4_32_o.valid)
+    .data  (lzc4_32_i.data),
+    .cnt   (lzc4_32_o.cnt),
+    .valid (lzc4_32_o.valid)
   );
 
   fpu_class fpu_class_comp_1 (
-      .class_i(class1_i),
-      .class_o(class1_o),
-      .lzc_o  (lzc1_32_o),
-      .lzc_i  (lzc1_32_i)
+    .class_i (class1_i),
+    .class_o (class1_o),
+    .lzc_o   (lzc1_32_o),
+    .lzc_i   (lzc1_32_i)
   );
 
   fpu_class fpu_class_comp_2 (
-      .class_i(class2_i),
-      .class_o(class2_o),
-      .lzc_o  (lzc2_32_o),
-      .lzc_i  (lzc2_32_i)
+    .class_i (class2_i),
+    .class_o (class2_o),
+    .lzc_o   (lzc2_32_o),
+    .lzc_i   (lzc2_32_i)
   );
 
   fpu_class fpu_class_comp_3 (
-      .class_i(class3_i),
-      .class_o(class3_o),
-      .lzc_o  (lzc3_32_o),
-      .lzc_i  (lzc3_32_i)
+    .class_i (class3_i),
+    .class_o (class3_o),
+    .lzc_o   (lzc3_32_o),
+    .lzc_i   (lzc3_32_i)
   );
 
   fpu_cmp fpu_cmp_comp (
-      .cmp_i(cmp_i),
-      .cmp_o(cmp_o)
+    .cmp_i (cmp_i),
+    .cmp_o (cmp_o)
   );
 
   fpu_max fpu_max_comp (
-      .max_i(max_i),
-      .max_o(max_o)
+    .max_i (max_i),
+    .max_o (max_o)
   );
 
   fpu_sgnj fpu_sgnj_comp (
-      .sgnj_i(sgnj_i),
-      .sgnj_o(sgnj_o)
+    .sgnj_i (sgnj_i),
+    .sgnj_o (sgnj_o)
   );
 
   fpu_cvt fpu_cvt_comp (
-      .cvt_f2i_i(cvt_f2i_i),
-      .cvt_f2i_o(cvt_f2i_o),
-      .cvt_i2f_i(cvt_i2f_i),
-      .cvt_i2f_o(cvt_i2f_o),
-      .lzc_o(lzc4_32_o),
-      .lzc_i(lzc4_32_i)
+    .cvt_f2i_i (cvt_f2i_i),
+    .cvt_f2i_o (cvt_f2i_o),
+    .cvt_i2f_i (cvt_i2f_i),
+    .cvt_i2f_o (cvt_i2f_o),
+    .lzc_o     (lzc4_32_o),
+    .lzc_i     (lzc4_32_i)
   );
 
   fpu_fma fpu_fma_comp (
@@ -125,10 +127,10 @@ module fpu_top (
   );
 
   fpu_mac fpu_mac_comp (
-      .reset(reset),
-      .clock(clock),
-      .mac_i(mac_i),
-      .mac_o(mac_o)
+    .clk (clk),
+    .rst_n (rst_n),
+    .mac_i (mac_i),
+    .mac_o (mac_o)
   );
 
   fpu_div_sqrt fpu_div_sqrt_comp (
@@ -136,8 +138,8 @@ module fpu_top (
   );
 
   fpu_rnd fpu_rnd_comp (
-      .rnd_i(rnd_i),
-      .rnd_o(rnd_o)
+    .rnd_i (rnd_i),
+    .rnd_o (rnd_o)
   );
 
 
@@ -171,6 +173,8 @@ module fpu_top (
       op = top_i.op;
       fmt = top_i.fmt;
       rm = top_i.rm;
+      busy = 1;
+      finish = 0;
     end else begin
       data1 = 0;
       data2 = 0;
@@ -178,11 +182,12 @@ module fpu_top (
       op = 0;
       fmt = 0;
       rm = 0;
+      finish = 0 ;
     end
 
     result = 0;
     flags = 0;
-    ready = top_i.enable;
+    ready = 0;
 
     class1_i.data = data1;
     class1_i.fmt = fmt;
@@ -256,39 +261,50 @@ module fpu_top (
     end else if (op.fclass) begin
       result = {22'h0, class1};
       flags  = 0;
+      ready  = 1;
     end else if (op.fcmp) begin
       result = cmp_o.result;
       flags  = cmp_o.flags;
+      ready  = 1;
     end else if (op.fmax) begin
       result = max_o.result;
       flags  = max_o.flags;
+      ready  = 1;
     end else if (op.fsgnj) begin
       result = sgnj_o.result;
       flags  = 0;
+      ready  = 1;
     end else if (op.fcvt_i2f) begin
       result = rnd_o.result;
       flags  = rnd_o.flags;
+      ready  = 1;
     end else if (op.fcvt_f2i) begin
       result = cvt_f2i_o.result;
       flags  = cvt_f2i_o.flags;
+      ready  = 1;
     end else if (op.fmv_f2i) begin
       result = data1;
       flags  = 0;
+      ready  = 1;
     end else if (op.fmv_i2f) begin
       result = data1;
       flags  = 0;
+      ready  = 1;
     end
 
     if (clear == 1) begin
       result = 0;
       flags = 0;
       ready = 0;
+      busy = 0;
     end
 
     top_o.result = result;
     top_o.flags  = flags;
     top_o.ready  = ready;
-
+    busy = 0;
+    finish = 1;
+    
   end
 
 endmodule

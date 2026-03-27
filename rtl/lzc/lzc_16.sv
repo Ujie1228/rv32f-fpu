@@ -1,7 +1,7 @@
 module lzc_16 (
-    input  [15:0] data,
-    output [3:0]  cnt,
-    output        valid
+    input  logic[15:0] data,
+    output logic[3:0]  cnt,
+    output logic       valid
 );
   timeunit 1ns; timeprecision 1ps;
 
@@ -22,15 +22,15 @@ module lzc_16 (
   logic s8;
 
   lzc_8 lzc_8_comp_0 (
-      .data(data[7:0]),
-      .cnt(z0),
-      .valid(v0)
+    .data  (data[7:0]),
+    .cnt   (z0),
+    .valid (v0)
   );
 
   lzc_8 lzc_8_comp_1 (
-      .data(data[15:8]),
-      .cnt(z1),
-      .valid(v1)
+    .data  (data[15:8]),
+    .cnt   (z1),
+    .valid (v1)
   );
 
   assign s0 = v1 | v0;

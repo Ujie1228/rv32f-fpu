@@ -37,17 +37,15 @@ module fpu_cmp (
       comp_le = (data1[31:0] <= data2[31:0]);
     end
   
-    if(rm==0)begin //FLE
-      if (class1[8] | class2[8] | class1[9] | class2[9]) begin
+    if(rm==0)begin //FEQ
+      if (class1[8] | class2[8]) begin
         flags[4] = 1;
+      end else if (class1[9] | class2[9]) begin
+        result[0] = 0;
       end else if ((class1[3] | class1[4]) & (class2[3] | class2[4])) begin
         result[0] = 1;
-      end else if (data1[32] ^ data2[32]) begin
-        result[0] = data1[32];
-      end else if (data1[32] == 0) begin
-        result[0] = comp_le;
-      end else begin
-        result[0] = ~comp_lt;
+      end else if (data1 == data2) begin
+        result[0] = 1;
       end
       
     end else if(rm==1)begin //FLT
@@ -63,17 +61,19 @@ module fpu_cmp (
         result[0] = ~comp_le;
       end
       
-    end else if(rm==2)begin //FEQ
-      if (class1[8] | class2[8]) begin
+    end else if(rm==2)begin //FLE
+      if (class1[8] | class2[8] | class1[9] | class2[9]) begin
         flags[4] = 1;
-      end else if (class1[9] | class2[9]) begin
-        result[0] = 0;
       end else if ((class1[3] | class1[4]) & (class2[3] | class2[4])) begin
         result[0] = 1;
-      end else if (data1 == data2) begin
-        result[0] = 1;
+      end else if (data1[32] ^ data2[32]) begin
+        result[0] = data1[32];
+      end else if (data1[32] == 0) begin
+        result[0] = comp_le;
+      end else begin
+        result[0] = ~comp_lt;
       end
-    end
+    end      
 
     cmp_o.result = result;
     cmp_o.flags  = flags;

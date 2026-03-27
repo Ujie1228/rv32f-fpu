@@ -1,7 +1,7 @@
 module lzc_32 (
-    input  [31:0] data,
-    output [4:0]  cnt,
-    output        valid
+    input  logic[31:0] data,
+    output logic[4:0]  cnt,
+    output logic       valid
 );
   timeunit 1ns; timeprecision 1ps;
 
@@ -24,15 +24,15 @@ module lzc_32 (
   logic s10;
 
   lzc_16 lzc_16_comp_0 (
-      .data  (data[15:0]),
-      .cnt   (z0),
-      .valid (v0)
+    .data  (data[15:0]),
+    .cnt   (z0),
+    .valid (v0)
   );
 
   lzc_16 lzc_16_comp_1 (
-      .data  (data[31:16]),
-      .cnt   (z1),
-      .valid (v1)
+    .data  (data[31:16]),
+    .cnt   (z1),
+    .valid (v1)
   );
 
   assign s0 = v1 | v0;
