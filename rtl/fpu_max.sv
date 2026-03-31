@@ -1,4 +1,4 @@
-import fpu_wire::*;
+import fpu_define::*;
 
 module fpu_max (
     input  fpu_max_in_type   max_i,
