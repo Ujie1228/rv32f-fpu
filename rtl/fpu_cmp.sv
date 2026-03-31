@@ -1,4 +1,4 @@
-import fpu_wire::*;
+import fpu_define::*;
 
 module fpu_cmp (
     input  fpu_cmp_in_type   cmp_i,
@@ -20,8 +20,8 @@ module fpu_cmp (
 
   always_comb begin
 
-    data1 = cmp_i.ext_data1;
-    data2 = cmp_i.ext_data2;
+    data1 = cmp_i.extend1;
+    data2 = cmp_i.extend2;
     rm = cmp_i.rm;
     class1 = cmp_i.class1;
     class2 = cmp_i.class2;

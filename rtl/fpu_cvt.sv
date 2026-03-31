@@ -1,4 +1,4 @@
-import fpu_wire::*;
+import fpu_define::*;
 
 module fpu_cvt (
     input  fpu_cvt_f2i_in_type   cvt_f2i_i,
@@ -15,7 +15,7 @@ module fpu_cvt (
   
   always_comb begin
 
-    f2i_v.ext_data = cvt_f2i_i.ext_data;
+    f2i_v.extend = cvt_f2i_i.extend;
     f2i_v.op = cvt_f2i_i.op.fcvt_op;
     f2i_v.rm = cvt_f2i_i.rm;
     f2i_v.classification = cvt_f2i_i.classification;
@@ -34,9 +34,9 @@ module fpu_cvt (
       f2i_v.exponent_bias = 35;  //无符号
     end
 
-    f2i_v.sign_cvt = f2i_v.ext_data[32];
-    f2i_v.exponent_cvt = f2i_v.ext_data[31:23] - 10'd252;
-    f2i_v.mantissa_cvt = {36'h1, f2i_v.ext_data[22:0]};
+    f2i_v.sign_cvt = f2i_v.extend[32];
+    f2i_v.exponent_cvt = f2i_v.extend[31:23] - 10'd252;
+    f2i_v.mantissa_cvt = {36'h1, f2i_v.extend[22:0]};
 
     if (f2i_v.classification[3] | f2i_v.classification[4]) begin  //+0 -0
       f2i_v.mantissa_cvt[23] = 0;

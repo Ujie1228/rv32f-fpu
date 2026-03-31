@@ -1,4 +1,4 @@
-import fpu_wire::*;
+import fpu_define::*;
 
 module fpu_mac (
     input  logic             clk,

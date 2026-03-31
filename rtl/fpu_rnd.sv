@@ -1,4 +1,4 @@
-import fpu_wire::*;
+import fpu_define::*;
 
 module fpu_rnd (
     input  fpu_rnd_in_type   rnd_i,

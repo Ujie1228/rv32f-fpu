@@ -1,4 +1,4 @@
-import fpu_wire::*;
+import fpu_define::*;
 
 module fpu_sgnj (
     input  fpu_sgnj_in_type   sgnj_i,

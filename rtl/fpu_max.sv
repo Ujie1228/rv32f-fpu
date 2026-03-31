@@ -10,8 +10,8 @@ module fpu_max (
 
   logic [31:0] data1;
   logic [31:0] data2;
-  logic [32:0] ext_data1;
-  logic [32:0] ext_data2;
+  logic [32:0] extend1;
+  logic [32:0] extend2;
   logic [1:0]  fmt;
   logic [2:0]  rm;
   logic [9:0]  class1;
@@ -25,8 +25,8 @@ module fpu_max (
 
     data1 = max_i.data1;
     data2 = max_i.data2;
-    ext_data1 = max_i.ext_data1;
-    ext_data2 = max_i.ext_data2;
+    extend1 = max_i.extend1;
+    extend2 = max_i.extend2;
     fmt = max_i.fmt;
     rm = max_i.rm;
     class1 = max_i.class1;
@@ -38,7 +38,7 @@ module fpu_max (
 
     if (fmt == 0) begin
 
-      comp = (ext_data1[31:0] > ext_data2[31:0]);
+      comp = (extend1[31:0] > extend2[31:0]);
 
       if (rm == 0) begin  //MIN
         if (class1[8] & class2[8]) begin   //sNaN
@@ -57,10 +57,10 @@ module fpu_max (
         end else if (class2[9]) begin
           result = data1;
 
-        end else if (ext_data1[32] ^ ext_data2[32]) begin  //异号
-          result = (ext_data1[32]) ? data1 : data2;
+        end else if (extend1[32] ^ extend2[32]) begin  //异号
+          result = (extend1[32]) ? data1 : data2;
         end else begin                                     //同号
-          if (ext_data1[32]) begin
+          if (extend1[32]) begin
             result = (comp) ? data1 : data2;
           end else begin
             result = (comp == 0) ? data1 : data2;
@@ -84,10 +84,10 @@ module fpu_max (
         end else if (class2[9]) begin
           result = data1;
 
-        end else if (ext_data1[32] ^ ext_data2[32]) begin  //异号
-          result = (ext_data1[32]) ? data2 : data1;
+        end else if (extend1[32] ^ extend2[32]) begin  //异号
+          result = (extend1[32]) ? data2 : data1;
         end else begin                                     //同号
-            if (ext_data1[32]) begin
+            if (extend1[32]) begin
               result = (comp) ? data2 : data1;
             end else begin
               result = (comp == 0) ? data2 : data1;
