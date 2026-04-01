@@ -41,6 +41,8 @@ module fpu_exe (
     data_FMA_reg_i.class3 = class3_i;
     data_FMA_reg_i.op = req_op_i;
     data_FMA_reg_i.rm = req_rm_i;
+    data_FMA_reg_i.req_valid = req_valid_i;
+    data_FMA_reg_i.req_tag = req_tag_i;
 
     data_DIV_reg_i.extend1 = extend1_i;
     data_DIV_reg_i.extend2 = extend2_i;
@@ -48,20 +50,27 @@ module fpu_exe (
     data_DIV_reg_i.class2 = class2_i;
     data_DIV_reg_i.op = req_op_i;
     data_DIV_reg_i.rm = req_rm_i;
+    data_DIV_reg_i.req_valid = req_valid_i;
+    data_DIV_reg_i.req_tag = req_tag_i;
 
     data_CVT_reg_i.data = data1_i;
     data_CVT_reg_i.extend = extend1_i;
     data_CVT_reg_i.op = req_op_i;
     data_CVT_reg_i.rm = req_rm_i;
     data_CVT_reg_i.classification = class1_i;
+    data_CVT_reg_i.req_valid = req_valid_i;
+    data_CVT_reg_i.req_tag = req_tag_i;
 
     data_MISC_reg_i.data1 = data1_i;
     data_MISC_reg_i.data2 = data2_i;
     data_MISC_reg_i.extend1 = extend1_i;
     data_MISC_reg_i.extend2 = extend2_i;
+    data_MISC_reg_i.op = req_op_i;
     data_MISC_reg_i.rm = req_rm_i;
     data_MISC_reg_i.class1 = class1_i;
     data_MISC_reg_i.class2 = class2_i;
+    data_MISC_reg_i.req_valid = req_valid_i;
+    data_MISC_reg_i.req_tag = req_tag_i;
 
   end
 
@@ -75,11 +84,23 @@ module fpu_exe (
         if (req_valid_i & req_ready_i) begin
             if (op_class_i == FMA) begin
                 data_FMA_reg_o <= data_FMA_reg_i;
+                data_DIV_reg_o <= 0;
+                data_CVT_reg_o <= 0;
+                data_MISC_reg_o <= 0;
             end else if (op_class_i == DIV) begin
+                data_FMA_reg_o <= 0;
                 data_DIV_reg_o <= data_DIV_reg_i;
+                data_CVT_reg_o <= 0;
+                data_MISC_reg_o <= 0;
             end else if (op_class_i == CVT) begin
+                data_FMA_reg_o <= 0;
+                data_DIV_reg_o <= 0;
                 data_CVT_reg_o <= data_CVT_reg_i;
+                data_MISC_reg_o <= 0;
             end else if (op_class_i == MISC) begin
+                data_FMA_reg_o <= 0;
+                data_DIV_reg_o <= 0;
+                data_CVT_reg_o <= 0;
                 data_MISC_reg_o <= data_MISC_reg_i;
             end
         end

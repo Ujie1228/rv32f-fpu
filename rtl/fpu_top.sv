@@ -14,7 +14,8 @@ module fpu_top (
   lzc_32_out_type lzc2_32_o;
   lzc_32_in_type  lzc3_32_i;
   lzc_32_out_type lzc3_32_o;
-
+  lzc_128_in_type lzc_128_i;
+  lzc_128_out_type lzc_128_o;
 
   lzc_32 u1_lzc_32 (
     .data  (lzc1_32_i.data),
@@ -32,6 +33,12 @@ module fpu_top (
     .data  (lzc3_32_i.data),
     .cnt   (lzc3_32_o.cnt),
     .valid (lzc3_32_o.valid)
+  );
+
+  lzc_128 u_lzc_128 (
+    .data  (lzc_128_i.data),
+    .cnt   (lzc_128_o.cnt),
+    .valid (lzc_128_o.valid)
   );
 
   // extend
@@ -72,12 +79,18 @@ module fpu_top (
   fpu_operation_type op;
   assign op = top_i.req_op_i;
 
-  //exe
-  fpu_fma_in_type  data_FMA_reg;
-  fpu_div_in_type  data_DIV_reg;
-  fpu_cvt_in_type  data_CVT_reg;
-  fpu_misc_in_type data_MISC_reg;  
+  //reg
+  fpu_fma_in_type  data_FMA_reg_i;
+  fpu_div_in_type  data_DIV_reg_i;
+  fpu_cvt_in_type  data_CVT_reg_i;
+  fpu_misc_in_type data_MISC_reg_i;
 
+  fpu_fma_out_type  data_FMA_reg_o;
+  fpu_div_out_type  data_DIV_reg_o;
+  fpu_cvt_out_type  data_CVT_reg_o;
+  fpu_misc_out_type data_MISC_reg_o;
+
+  //exe
   fpu_exe u_fpu_exe (
     .clk_i(clk_i),
     .rst_ni(rst_ni),
@@ -98,11 +111,31 @@ module fpu_top (
     .req_tag_i(top_i.req_tag_i),
     .req_ready_i(top_o.req_ready_o),
 
-    .data_FMA_reg_o(data_FMA_reg),
-    .data_DIV_reg_o(data_DIV_reg),
-    .data_CVT_reg_o(data_CVT_reg),
-    .data_MISC_reg_o(data_MISC_reg)
+    .data_FMA_reg_o(data_FMA_reg_i),
+    .data_DIV_reg_o(data_DIV_reg_i),
+    .data_CVT_reg_o(data_CVT_reg_i),
+    .data_MISC_reg_o(data_MISC_reg_i)
   );
+
+  //fma
+  fpu_fma u_fpu_fma (
+    .clk_i(clk_i),
+    .rst_ni(rst_ni),
+    .reg_empty(),
+    .fma_i(data_FMA_reg_i),
+    .fma_o(data_FMA_reg_o),
+    .lzc_o(lzc_128_o),
+    .lzc_i(lzc_128_i)
+  );
+
+  //div
+
+  //cvt
+
+  //misc
+
+  //control
+
 
   always_comb begin
 

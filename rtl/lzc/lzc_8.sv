@@ -1,9 +1,8 @@
 module lzc_8 (
-    input  logic[7:0] data,
-    output logic[2:0] cnt,
-    output logic      valid
+    input  logic [7:0] data,
+    output logic [2:0] cnt,
+    output logic       valid
 );
-  timeunit 1ns; timeprecision 1ps;
 
   logic [1:0] z0;
   logic [1:0] z1;
@@ -19,13 +18,13 @@ module lzc_8 (
   logic s5;
   logic s6;
 
-  lzc_4 lzc_4_0 (
+  lzc_4 u1_lzc_4 (
     .data  (data[3:0]),
     .cnt   (z0),
     .valid (v0)
   );
 
-  lzc_4 lzc_4_1 (
+  lzc_4 u2_lzc_4 (
     .data  (data[7:4]),
     .cnt   (z1),
     .valid (v1)

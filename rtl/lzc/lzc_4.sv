@@ -1,9 +1,8 @@
 module lzc_4 (
-    input  logic[3:0] data,
-    output logic[1:0] cnt,
-    output logic      valid
+    input  logic [3:0] data,
+    output logic [1:0] cnt,
+    output logic       valid
 );
-  timeunit 1ns; timeprecision 1ps;
 
   logic s0;
   logic s1;

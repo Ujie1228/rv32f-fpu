@@ -1,11 +1,11 @@
-module lzc_32 (
-    input  logic [31:0] data,
-    output logic [4:0]  cnt,
+module lzc_64 (
+    input  logic [63:0] data,
+    output logic [5:0]  cnt,
     output logic        valid
 );
 
-  logic [3:0] z0;
-  logic [3:0] z1;
+  logic [4:0] z0;
+  logic [4:0] z1;
 
   logic v0;
   logic v1;
@@ -21,17 +21,19 @@ module lzc_32 (
   logic s8;
   logic s9;
   logic s10;
+  logic s11;
+  logic s12;
 
-  lzc_16 u1_lzc_16 (
-    .data  (data[15:0]),
-    .cnt   (z0),
-    .valid (v0)
+  lzc_32 u1_lzc_32 (
+      .data  (data[31:0]),
+      .cnt   (z0),
+      .valid (v0)
   );
 
-  lzc_16 u2_lzc_16 (
-    .data  (data[31:16]),
-    .cnt   (z1),
-    .valid (v1)
+  lzc_32 u2_lzc_32 (
+      .data  (data[63:32]),
+      .cnt   (z1),
+      .valid (v1)
   );
 
   assign s0 = v1 | v0;
@@ -43,12 +45,15 @@ module lzc_32 (
   assign s6 = z1[2] | s5;
   assign s7 = (~v1) & z0[3];
   assign s8 = z1[3] | s7;
+  assign s9 = (~v1) & z0[4];
+  assign s10 = z1[4] | s9;
 
   assign valid = s0;
   assign cnt[0] = s2;
   assign cnt[1] = s4;
   assign cnt[2] = s6;
   assign cnt[3] = s8;
-  assign cnt[4] = v1;
+  assign cnt[4] = s10;
+  assign cnt[5] = v1;
 
 endmodule
