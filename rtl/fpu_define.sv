@@ -89,22 +89,6 @@ package fpu_define;
     logic [4:0]  flags;
   } fpu_rnd_out_type;
 
-  parameter fpu_rnd_in_type init_fpu_rnd_in = '{
-      sig : 0,
-      expo : 0,
-      mant : 0,
-      rema : 0,
-      fmt : 0,
-      rm : 0,
-      grs : 0,
-      snan : 0,
-      qnan : 0,
-      dbz : 0,
-      infs : 0,
-      zero : 0,
-      diff : 0
-  };
-
   //********lzc*********
   typedef struct packed {
     logic [31:0] data;
@@ -144,7 +128,6 @@ package fpu_define;
     logic [31:0] data2;
     logic [32:0] extend1;
     logic [32:0] extend2;
-    logic [1:0]  fmt;
     logic [2:0]  rm;
     logic [9:0]  class1;
     logic [9:0]  class2;
@@ -159,7 +142,6 @@ package fpu_define;
   typedef struct packed {
     logic [31:0] data1;
     logic [31:0] data2;
-    logic [1:0]  fmt;
     logic [2:0]  rm;
   } fpu_sgnj_in_type;
 
@@ -184,81 +166,6 @@ package fpu_define;
     logic        req_valid;
     logic [4:0]  req_tag;
   } fpu_cvt_out_type;
-
-  typedef struct packed {
-    logic [32:0] extend;
-    fpu_operation_type op;
-    logic [2:0] rm;
-    logic [9:0] classification;
-  } fpu_cvt_f2i_in_type;
-
-  typedef struct packed {
-    logic [31:0] result;
-    logic [4:0]  flags;
-  } fpu_cvt_f2i_out_type;
-
-  typedef struct packed {
-    logic [32:0] extend;
-    logic [1:0] op;
-    logic [2:0] rm;
-    logic [9:0] classification;
-    logic [31:0] result;
-    logic [4:0] flags;
-    logic snan;
-    logic qnan;
-    logic infs;
-    logic zero;
-    logic sign_cvt;
-    logic [9:0] exponent_cvt;
-    logic [58:0] mantissa_cvt;
-    logic [9:0] exponent_bias;
-    logic [32:0] mantissa_uint;
-    logic [2:0] grs;
-    logic odd;
-    logic rnded;
-    logic oor;
-    logic or_1;
-    logic or_2;
-    logic or_3;
-    logic or_4;
-    logic or_5;
-    logic oor_64u;
-    logic oor_64s;
-    logic oor_32u;
-    logic oor_32s;
-  } fpu_cvt_f2i_var_type;
-
-  typedef struct packed {
-    logic [31:0] data;
-    fp_operation_type op;
-    logic [1:0] fmt;
-    logic [2:0] rm;
-  } fpu_cvt_i2f_in_type;
-
-  typedef struct packed {
-    fpu_rnd_in_type rnd;
-  } fpu_cvt_i2f_out_type;
-
-  typedef struct packed {
-    logic [31:0] data;
-    logic [1:0] op;
-    logic [1:0] fmt;
-    logic [2:0] rm;
-    logic snan;
-    logic qnan;
-    logic dbz;
-    logic infs;
-    logic zero;
-    logic sign_uint;
-    logic [4:0] exponent_uint;
-    logic [31:0] mantissa_uint;
-    logic [4:0] counter_uint;
-    logic [6:0] exponent_bias;
-    logic sign_rnd;
-    logic [10:0] exponent_rnd;
-    logic [24:0] mantissa_rnd;
-    logic [2:0] grs;
-  } fpu_cvt_i2f_var_type;
 
   //*******fma**********
   typedef struct packed {
@@ -306,8 +213,10 @@ package fpu_define;
   } fpu_div_in_type;
 
   typedef struct packed {
-    fpu_rnd_in_type rnd;
-    logic ready;
+    logic [31:0] result;
+    logic [4:0]  flags;
+    logic        req_valid;
+    logic [4:0]  req_tag;
   } fpu_div_out_type;
 
 endpackage

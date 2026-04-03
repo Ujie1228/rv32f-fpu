@@ -1,10 +1,8 @@
 import fpu_define::*;
 
 module fpu_mac (
-    input  logic             clk,
-    input  logic             rst_n,
-    input  fpu_mac_in_type   mac_i,
-    output fpu_mac_out_type  mac_o
+    input  fpu_mac_in_type  mac_i,
+    output fpu_mac_out_type mac_o
 );
   timeunit 1ns; timeprecision 1ps;
 

@@ -84,23 +84,23 @@ module fpu_exe (
         if (req_valid_i & req_ready_i) begin
             if (op_class_i == FMA) begin
                 data_FMA_reg_o <= data_FMA_reg_i;
-                data_DIV_reg_o <= 0;
-                data_CVT_reg_o <= 0;
-                data_MISC_reg_o <= 0;
+                data_DIV_reg_o.req_valid <= 0;
+                data_CVT_reg_o.req_valid <= 0;
+                data_MISC_reg_o.req_valid <= 0;
             end else if (op_class_i == DIV) begin
-                data_FMA_reg_o <= 0;
+                data_FMA_reg_o.req_valid <= 0;
                 data_DIV_reg_o <= data_DIV_reg_i;
-                data_CVT_reg_o <= 0;
-                data_MISC_reg_o <= 0;
+                data_CVT_reg_o.req_valid <= 0;
+                data_MISC_reg_o.req_valid <= 0;
             end else if (op_class_i == CVT) begin
-                data_FMA_reg_o <= 0;
-                data_DIV_reg_o <= 0;
+                data_FMA_reg_o.req_valid <= 0;
+                data_DIV_reg_o.req_valid <= 0;
                 data_CVT_reg_o <= data_CVT_reg_i;
-                data_MISC_reg_o <= 0;
+                data_MISC_reg_o.req_valid <= 0;
             end else if (op_class_i == MISC) begin
-                data_FMA_reg_o <= 0;
-                data_DIV_reg_o <= 0;
-                data_CVT_reg_o <= 0;
+                data_FMA_reg_o.req_valid <= 0;
+                data_DIV_reg_o.req_valid <= 0;
+                data_CVT_reg_o.req_valid <= 0;
                 data_MISC_reg_o <= data_MISC_reg_i;
             end
         end

@@ -21,18 +21,14 @@ module fpu_sgnj (
 
     result = 0;
 
-    if (fmt == 0) begin
+    result[30:0] = data1[30:0];
 
-      result[30:0] = data1[30:0];
-
-      case (rm)
-        3'b000: result[31] = data2[31];
-        3'b001: result[31] = ~data2[31];
-        3'b010: result[31] = data1[31] ^ data2[31];
-        default: result[31] = 1'b0;
-      endcase
-
-    end
+    case (rm)
+      3'b000: result[31] = data2[31];
+      3'b001: result[31] = ~data2[31];
+      3'b010: result[31] = data1[31] ^ data2[31];
+      default: result[31] = 1'b0;
+    endcase
 
     sgnj_o.result = result;
 

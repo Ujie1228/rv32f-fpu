@@ -14,8 +14,12 @@ module fpu_top (
   lzc_32_out_type lzc2_32_o;
   lzc_32_in_type  lzc3_32_i;
   lzc_32_out_type lzc3_32_o;
+  lzc_32_in_type  lzc4_32_i;
+  lzc_32_out_type lzc4_32_o;
   lzc_128_in_type lzc_128_i;
   lzc_128_out_type lzc_128_o;
+
+  logic busy;
 
   lzc_32 u1_lzc_32 (
     .data  (lzc1_32_i.data),
@@ -33,6 +37,12 @@ module fpu_top (
     .data  (lzc3_32_i.data),
     .cnt   (lzc3_32_o.cnt),
     .valid (lzc3_32_o.valid)
+  );
+
+  lzc_32 u4_lzc_32 (
+    .data  (lzc4_32_i.data),
+    .cnt   (lzc4_32_o.cnt),
+    .valid (lzc4_32_o.valid)
   );
 
   lzc_128 u_lzc_128 (
@@ -90,52 +100,103 @@ module fpu_top (
   fpu_cvt_out_type  data_CVT_reg_o;
   fpu_misc_out_type data_MISC_reg_o;
 
+  //empty
+  logic reg_empty_fma;
+  logic reg_empty_div;
+  logic reg_empty_cvt;
+  logic reg_empty_misc;
+
   //exe
   fpu_exe u_fpu_exe (
-    .clk_i(clk_i),
-    .rst_ni(rst_ni),
-    .data1_i(top_i.req_data1_i),
-    .data2_i(top_i.req_data2_i),
-    .data3_i(top_i.req_data3_i),
-    .extend1_i(extend1),
-    .extend2_i(extend2),
-    .extend3_i(extend3),
-    .class1_i(class1),
-    .class2_i(class2),
-    .class3_i(class3),
+    .clk_i     (clk_i),
+    .rst_ni    (rst_ni),
+    .data1_i   (top_i.req_data1_i),
+    .data2_i   (top_i.req_data2_i),
+    .data3_i   (top_i.req_data3_i),
+    .extend1_i (extend1),
+    .extend2_i (extend2),
+    .extend3_i (extend3),
+    .class1_i  (class1),
+    .class2_i  (class2),
+    .class3_i  (class3),
 
-    .req_op_i(top_i.req_op_i),
-    .op_class_i(op_class),
-    .req_valid_i(top_i.req_valid_i),
-    .req_rm_i(top_i.req_rm_i),
-    .req_tag_i(top_i.req_tag_i),
-    .req_ready_i(top_o.req_ready_o),
+    .req_op_i    (top_i.req_op_i),
+    .op_class_i  (op_class),
+    .req_valid_i (top_i.req_valid_i),
+    .req_rm_i    (top_i.req_rm_i),
+    .req_tag_i   (top_i.req_tag_i),
+    .req_ready_i (top_o.req_ready_o),
 
-    .data_FMA_reg_o(data_FMA_reg_i),
-    .data_DIV_reg_o(data_DIV_reg_i),
-    .data_CVT_reg_o(data_CVT_reg_i),
-    .data_MISC_reg_o(data_MISC_reg_i)
+    .data_FMA_reg_o  (data_FMA_reg_i),
+    .data_DIV_reg_o  (data_DIV_reg_i),
+    .data_CVT_reg_o  (data_CVT_reg_i),
+    .data_MISC_reg_o (data_MISC_reg_i)
   );
 
   //fma
   fpu_fma u_fpu_fma (
-    .clk_i(clk_i),
-    .rst_ni(rst_ni),
-    .reg_empty(),
-    .fma_i(data_FMA_reg_i),
-    .fma_o(data_FMA_reg_o),
-    .lzc_o(lzc_128_o),
-    .lzc_i(lzc_128_i)
+    .clk_i     (clk_i),
+    .rst_ni    (rst_ni),
+    .reg_empty (reg_empty_fma),
+    .fma_i     (data_FMA_reg_i),
+    .fma_o     (data_FMA_reg_o),
+    .lzc_o     (lzc_128_o),
+    .lzc_i     (lzc_128_i)
   );
 
   //div
+  fpu_div u_fpu_div (
+    .clk_i(clk_i),
+    .rst_ni(rst_ni),
+    .reg_empty(reg_empty_div),
+    .div_i(data_DIV_reg_i),
+    .div_o(data_DIV_reg_o)
+  );
 
   //cvt
+  fpu_cvt u_fpu_cvt (
+    .clk_i     (clk_i),
+    .rst_ni    (rst_ni),
+    .reg_empty (reg_empty_cvt),
+    .cvt_i     (data_CVT_reg_i),
+    .cvt_o     (data_CVT_reg_o),
+    .lzc_o     (lzc4_32_o),
+    .lzc_i     (lzc4_32_i)
+  );
 
   //misc
+    fpu_misc u_fpu_misc (
+    .clk_i     (clk_i),
+    .rst_ni    (rst_ni),
+    .reg_empty (reg_empty_misc),
+    .misc_i    (data_MISC_reg_i),
+    .misc_o    (data_MISC_reg_o)
+  );
 
   //control
+  fpu_control u_fpu_control (
+    .clk_i           (clk_i),
+    .rst_ni          (rst_ni),
+    .op_class_i      (op_class),
+    .req_valid_i     (top_i.req_valid_i),
+    .resp_ready_i    (top_i.resp_ready_i),
+    .busy            (busy),
+    .data_FMA_reg_i  (data_FMA_reg_o),
+    .data_DIV_reg_i  (data_DIV_reg_o),
+    .data_CVT_reg_i  (data_CVT_reg_o),
+    .data_MISC_reg_i (data_MISC_reg_o),
 
+    .reg_empty_fma_i  (reg_empty_fma),
+    .reg_empty_div_i  (reg_empty_div),
+    .reg_empty_cvt_i  (reg_empty_cvt),
+    .reg_empty_misc_i (reg_empty_misc),
+    
+    .req_ready_o   (top_o.req_ready_o),
+    .resp_valid_o  (top_o.resp_valid_o),
+    .resp_result_o (top_o.resp_result_o),
+    .resp_flags_o  (top_o.resp_flags_o),
+    .resp_tag_o    (top_o.resp_tag_o)
+  );
 
   always_comb begin
 
@@ -149,10 +210,18 @@ module fpu_top (
       op_class = MISC;
     end
 
+  end
 
+  //busy
 
-
-
+  always_ff @(posedge clk_i or posedge rst_ni) begin
+    if (rst_ni) begin
+      busy <= 0;
+    end else if (top_i.req_valid_i & top_o.req_ready_o & (op_class == DIV)) begin
+      busy <= 1;
+    end else if ((op_class == DIV) & data_DIV_reg_o.resp_valid_o & top_i.resp_ready_i) begin
+      busy <= 0;
+    end
   end
 
 endmodule

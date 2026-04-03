@@ -1,9 +1,9 @@
 import fpu_define::*;
 
 module fpu_fma (
-    input  logic clk_i,
-    input  logic rst_ni,
-    input  logic reg_empty,
+    input  logic            clk_i,
+    input  logic            rst_ni,
+    input  logic            reg_empty,
     input  fpu_fma_in_type  fma_i,
     output fpu_fma_out_type fma_o,
     input  lzc_128_out_type lzc_o,
@@ -346,6 +346,11 @@ module fpu_fma (
 
   end
 
+  fpu_rnd u_fpu_rnd (
+    .rnd_i (v_3.fp_rnd),
+    .rnd_o ({rin_3.result , rin_3.flags})
+  );
+
   always_comb begin
 
     v_3.fp_rnd.sig = r_2.sign_rnd;
@@ -365,12 +370,6 @@ module fpu_fma (
     v_3.req_valid = r_2.req_valid;
     v_3.reareq_tagdy = r_2.req_tag;
 
-
-    fpu_rnd u_fpu_rnd (
-        .rnd_i (v_3.fp_rnd),
-        .rnd_o ({rin_3.result , rin_3.flags})
-    );
-
     rin_3.req_valid = v_3.req_valid;
     rin_3.reareq_tagdy = v_3.req_tag;
 
@@ -378,16 +377,6 @@ module fpu_fma (
 
   always_comb begin
         fma_o = r_3;
-  end
-
-  always_ff @(posedge clk_i) begin
-    if (rst_ni == 0) begin
-      r_1 <= 0;
-      r_2 <= 0;
-    end else begin
-      r_1 <= rin_1;
-      r_2 <= rin_2;
-    end
   end
 
   always_ff @(posedge clk_i or posedge rst_ni) begin
@@ -405,8 +394,5 @@ module fpu_fma (
         r_3 <= rin_3;
     end
   end
-
-
-
 
 endmodule

@@ -36,63 +36,59 @@ module fpu_max (
     result = 0;
     flags = 0;
 
-    if (fmt == 0) begin
+    comp = (extend1[31:0] > extend2[31:0]);
 
-      comp = (extend1[31:0] > extend2[31:0]);
+    if (rm == 0) begin  //MIN
+      if (class1[8] & class2[8]) begin   //sNaN
+        result   = nan;
+        flags[4] = 1;
+      end else if (class1[8]) begin
+        result   = data2;
+        flags[4] = 1;
+      end else if (class2[8]) begin
+        result   = data1;
+        flags[4] = 1;
+      end else if (class1[9] & class2[9]) begin   //qNaN
+        result = nan;
+      end else if (class1[9]) begin
+        result = data2;
+      end else if (class2[9]) begin
+        result = data1;
+      end else if (extend1[32] ^ extend2[32]) begin  //异号
+        result = (extend1[32]) ? data1 : data2;
+      end else begin                                     //同号
+        if (extend1[32]) begin
+          result = (comp) ? data1 : data2;
+        end else begin
+          result = (comp == 0) ? data1 : data2;
+        end
+      end
 
-      if (rm == 0) begin  //MIN
-        if (class1[8] & class2[8]) begin   //sNaN
-          result   = nan;
-          flags[4] = 1;
-        end else if (class1[8]) begin
-          result   = data2;
-          flags[4] = 1;
-        end else if (class2[8]) begin
-          result   = data1;
-          flags[4] = 1;
-        end else if (class1[9] & class2[9]) begin   //qNaN
-          result = nan;
-        end else if (class1[9]) begin
-          result = data2;
-        end else if (class2[9]) begin
-          result = data1;
+    end else if (rm == 1) begin  //MAX
+      if ((class1[8] & class2[8])) begin   //sNaN
+        result   = nan;
+        flags[4] = 1;
+      end else if (class1[8]) begin
+        result   = data2;
+        flags[4] = 1;
+      end else if (class2[8]) begin
+        result   = data1;
+        flags[4] = 1;
+      end else if (class1[9] & class2[9]) begin   //qNaN
+        result = nan;
+      end else if (class1[9]) begin
+        result = data2;
+      end else if (class2[9]) begin
+        result = data1;
 
-        end else if (extend1[32] ^ extend2[32]) begin  //异号
-          result = (extend1[32]) ? data1 : data2;
-        end else begin                                     //同号
+      end else if (extend1[32] ^ extend2[32]) begin  //异号
+        result = (extend1[32]) ? data2 : data1;
+      end else begin                                     //同号
           if (extend1[32]) begin
-            result = (comp) ? data1 : data2;
+            result = (comp) ? data2 : data1;
           end else begin
-            result = (comp == 0) ? data1 : data2;
+            result = (comp == 0) ? data2 : data1;
           end
-        end
-
-      end else if (rm == 1) begin  //MAX
-        if ((class1[8] & class2[8])) begin   //sNaN
-          result   = nan;
-          flags[4] = 1;
-        end else if (class1[8]) begin
-          result   = data2;
-          flags[4] = 1;
-        end else if (class2[8]) begin
-          result   = data1;
-          flags[4] = 1;
-        end else if (class1[9] & class2[9]) begin   //qNaN
-          result = nan;
-        end else if (class1[9]) begin
-          result = data2;
-        end else if (class2[9]) begin
-          result = data1;
-
-        end else if (extend1[32] ^ extend2[32]) begin  //异号
-          result = (extend1[32]) ? data2 : data1;
-        end else begin                                     //同号
-            if (extend1[32]) begin
-              result = (comp) ? data2 : data1;
-            end else begin
-              result = (comp == 0) ? data2 : data1;
-            end
-        end
       end
     end
 
