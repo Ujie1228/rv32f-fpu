@@ -56,15 +56,13 @@ package fpu_define;
     logic [2:0]  rm;
     logic [9:0]  class1;
     logic [9:0]  class2;
-    logic        req_valid;
-    logic [4:0]  req_tag;
+    logic [4:0]  tag;
   } fpu_misc_in_type;
 
   typedef struct packed {
     logic [31:0] result;
     logic [4:0]  flags;
-    logic        req_valid;
-    logic [4:0]  req_tag;
+    logic [4:0]  tag;
   } fpu_misc_out_type;
 
   //*******rnd**********
@@ -89,24 +87,6 @@ package fpu_define;
     logic [4:0]  flags;
   } fpu_rnd_out_type;
 
-  //********lzc*********
-  typedef struct packed {
-    logic [31:0] data;
-  } lzc_32_in_type;
-
-  typedef struct packed {
-    logic [4:0] cnt;
-    logic valid;
-  } lzc_32_out_type;
-
-  typedef struct packed {
-    logic [127:0] data;
-  } lzc_128_in_type;
-
-  typedef struct packed {
-    logic [6:0] cnt;
-    logic valid;
-  } lzc_128_out_type;
 
   //********cmp*********
   typedef struct packed {

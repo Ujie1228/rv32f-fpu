@@ -5,7 +5,9 @@ module fpu_misc (
     input  logic             rst_ni,
     input  logic             reg_empty,
     input  fpu_misc_in_type  misc_i,
-    output fpu_misc_out_type misc_o
+    output fpu_misc_out_type misc_o,
+    output logic             misc_ready,
+    output logic             misc_valid
 );
 
   fpu_sgnj_in_type  sgnj_i;

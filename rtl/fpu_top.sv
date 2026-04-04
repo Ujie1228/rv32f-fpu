@@ -1,4 +1,5 @@
 import fpu_define::*;
+import lzc_define::*;
 
 module fpu_top (
     input   logic            clk_i,
@@ -84,16 +85,31 @@ module fpu_top (
     .lzc_i    (lzc3_32_i)
   );  
 
-  //op_class
+  // op_class
   logic [3:0] op_class;
   fpu_operation_type op;
+
   assign op = top_i.req_op_i;
 
+  always_comb begin
+      op_class = MISC;
+    if (op.fmadd | op.fmsub | op.fnmadd | op.fnmsub | op.fadd | op.fsub | op.fmul) begin
+      op_class = FMA;
+    end else if (op.fdiv | op.fsqrt) begin
+      op_class = DIV;
+    end else if (op.fcvt_i2f | op.fcvt_f2i) begin
+      op_class = CVT;
+    end else if (op.fsgnj | op.fcmp | op.fmax | op.fclass) begin
+      op_class = MISC;
+    end
+  end
+
+
   //reg
-  fpu_fma_in_type  data_FMA_reg_i;
-  fpu_div_in_type  data_DIV_reg_i;
-  fpu_cvt_in_type  data_CVT_reg_i;
-  fpu_misc_in_type data_MISC_reg_i;
+  fpu_fma_in_type  req_data_FMA_reg;
+  fpu_div_in_type  req_data_DIV_reg;
+  fpu_cvt_in_type  req_data_CVT_reg;
+  fpu_misc_in_type req_data_MISC_reg;
 
   fpu_fma_out_type  data_FMA_reg_o;
   fpu_div_out_type  data_DIV_reg_o;
@@ -127,10 +143,10 @@ module fpu_top (
     .req_tag_i   (top_i.req_tag_i),
     .req_ready_i (top_o.req_ready_o),
 
-    .data_FMA_reg_o  (data_FMA_reg_i),
-    .data_DIV_reg_o  (data_DIV_reg_i),
-    .data_CVT_reg_o  (data_CVT_reg_i),
-    .data_MISC_reg_o (data_MISC_reg_i)
+    .data_FMA_reg_o  (req_data_FMA_reg),
+    .data_DIV_reg_o  (req_data_DIV_reg),
+    .data_CVT_reg_o  (req_data_CVT_reg),
+    .data_MISC_reg_o (req_data_MISC_reg)
   );
 
   //fma
@@ -164,14 +180,14 @@ module fpu_top (
     .lzc_i     (lzc4_32_i)
   );
 
-  //misc
-    fpu_misc u_fpu_misc (
-    .clk_i     (clk_i),
-    .rst_ni    (rst_ni),
-    .reg_empty (reg_empty_misc),
-    .misc_i    (data_MISC_reg_i),
-    .misc_o    (data_MISC_reg_o)
-  );
+  // //misc
+  // fpu_misc u_fpu_misc (
+  //   .clk_i     (clk_i),
+  //   .rst_ni    (rst_ni),
+  //   .reg_empty (reg_empty_misc),
+  //   .misc_i    (data_MISC_reg_i),
+  //   .misc_o    (data_MISC_reg_o)
+  // );
 
   //control
   fpu_control u_fpu_control (
@@ -197,20 +213,6 @@ module fpu_top (
     .resp_flags_o  (top_o.resp_flags_o),
     .resp_tag_o    (top_o.resp_tag_o)
   );
-
-  always_comb begin
-
-    if (op.fmadd | op.fmsub | op.fnmadd | op.fnmsub | op.fadd | op.fsub | op.fmul) begin
-      op_class = FMA;
-    end else if (op.fdiv | op.fsqrt) begin
-      op_class = DIV;
-    end else if (op.fcvt_i2f | op.fcvt_f2i) begin
-      op_class = CVT;
-    end else if (op.fsgnj | op.fcmp | op.fmax | op.fclass) begin
-      op_class = MISC;
-    end
-
-  end
 
   //busy
 
