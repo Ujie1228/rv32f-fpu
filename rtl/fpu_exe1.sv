@@ -28,7 +28,9 @@ module fpu_exe(
     output fpu_fma_in_type  req_data_FMA_reg_o,
     output fpu_div_in_type  req_data_DIV_reg_o,
     output fpu_cvt_in_type  req_data_CVT_reg_o,
-    output fpu_misc_in_type req_data_MISC_reg_o
+    output fpu_misc_in_type req_data_MISC_reg_o,
+
+    output logic misc_start_o
 
 );
 
@@ -52,8 +54,12 @@ module fpu_exe(
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin
             req_data_MISC_reg_o <= '0;
+            misc_start <= '0;
         end else if (req_valid_i & misc_ready_i) begin
             req_data_MISC_reg_o <= req_data_MISC;
+            misc_start <= 1'b1;
+        end else begin
+            misc_start <= 1'b0;
         end
     end
 

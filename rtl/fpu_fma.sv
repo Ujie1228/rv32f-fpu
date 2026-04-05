@@ -368,10 +368,10 @@ module fpu_fma (
     v_3.fp_rnd.diff = r_2.diff;
     v_3.ready = r_2.ready;
     v_3.req_valid = r_2.req_valid;
-    v_3.reareq_tagdy = r_2.req_tag;
+    v_3.req_tag = r_2.req_tag;
 
     rin_3.req_valid = v_3.req_valid;
-    rin_3.reareq_tagdy = v_3.req_tag;
+    rin_3.req_tag = v_3.req_tag;
 
   end
 
