@@ -1,5 +1,5 @@
 import fpu_define::*;
-
+import lzc_define::*;
 module fpu_fma (
     input  logic            clk_i,
     input  logic            rst_ni,

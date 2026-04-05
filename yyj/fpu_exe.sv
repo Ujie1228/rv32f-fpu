@@ -54,12 +54,12 @@ module fpu_exe(
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin
             req_data_MISC_reg_o <= '0;
-            misc_start <= '0;
+            misc_start_o <= '0;
         end else if (req_valid_i & misc_ready_i) begin
             req_data_MISC_reg_o <= req_data_MISC;
-            misc_start <= 1'b1;
+            misc_start_o <= 1'b1;
         end else begin
-            misc_start <= 1'b0;
+            misc_start_o <= 1'b0;
         end
     end
 

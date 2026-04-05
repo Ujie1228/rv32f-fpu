@@ -1,5 +1,6 @@
 import fpu_define::*;
 import lzc_define::*;
+
 module fpu_ext (
     input  logic [31:0] data_i,
     output logic [32:0] extend_o,
