@@ -107,9 +107,9 @@ package fpu_define;
       logic [31:0] result;
     } fpu_sgnj_out_type;
 
-    // class 
+    //*******class*********
     typedef struct packed {
-      logic [9:0]  class1;  
+      logic [9:0] class1;  
     } fpu_class_in_type;
 
     typedef struct packed {

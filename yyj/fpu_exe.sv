@@ -30,7 +30,14 @@ module fpu_exe(
     output fpu_cvt_in_type  req_data_CVT_reg_o,
     output fpu_misc_in_type req_data_MISC_reg_o,
 
-    output logic misc_start_o
+    output logic misc_start_o,
+
+    input logic resp_ready_i,
+    input fpu_misc_out_type resp_misc_reg_i,
+    input logic misc_data_vld_i,
+    output logic misc_reg_empty_o,
+
+    output fpu_top_out_type result_o
 
 );
 
@@ -68,6 +75,28 @@ module fpu_exe(
     // FMA
 
     // DIV
+
+    // 输出控制 & empty
+    always_comb begin
+        misc_reg_empty_o = 1'b1;
+        if (misc_data_vld_i & ~resp_ready_i) begin
+            misc_reg_empty_o = 1'b0;
+        end else if (misc_data_vld_i & resp_ready_i) begin
+            misc_reg_empty_o = 1'b1;
+        end
+    end
+
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni) begin   
+            result_o <= 0;
+        end else if (misc_data_vld_i & resp_ready_i) begin
+            // 以下是result赋值
+            // ...
+
+            
+        end
+    end
+
 
 
 endmodule

@@ -13,6 +13,9 @@ module fpu_misc(
     output logic misc_data_vld_o
 );
 
+    // misc_o
+    fpu_misc_out_type misc_o;
+
     // sgnj cmp max class
     fpu_sgnj_in_type  sgnj_i;
     fpu_sgnj_out_type sgnj_o;
@@ -22,6 +25,14 @@ module fpu_misc(
     fpu_max_out_type  max_o;
     fpu_class_in_type class_i;
     fpu_class_out_type class_o;
+
+    // start
+    logic start_n;
+    logic start_reg;
+    logic start_capture; // 持续一个时钟周期，用于锁存start_m
+
+    //
+    assign start_n = misc_start_i;
 
     assign sgnj_i.data1 = misc_reg_i.data1;
     assign sgnj_i.data2 = misc_reg_i.data2;
@@ -42,6 +53,88 @@ module fpu_misc(
     assign max_i.class2 = misc_reg_i.class2;
     
     assign class_i.class1 = misc_reg_i.class1;
+    
+    // ready
+    assign misc_ready_o = ~misc_stall_i;
 
-endmodule// outports wire
+    // fsgnj
+    fpu_sgnj u_fpu_sgnj (
+        .sgnj_i(sgnj_i),
+        .sgnj_o(sgnj_o)
+    );
+
+    // fcmp
+    fpu_cmp u_fpu_cmp (
+        .cmp_i(cmp_i),
+        .cmp_o(cmp_o)
+    );
+
+    // fmax
+    fpu_max u_fpu_max (
+        .max_i(max_i),
+        .max_o(max_o)
+    );
+
+    // class
+    assign class_o.result = {22'b0, class_i.class1};
+
+    // misc_o
+    always_comb begin
+        misc_o = '0;
+        if (misc_i.op.fsgnj) begin
+            misc_o.result = sgnj_o.result;
+            misc_o.flags = '0;
+            misc_o.tag = misc_i.tag;
+        end else if (misc_i.op.fcmp) begin
+            misc_o.result = cmp_o.result;
+            misc_o.flags = cmp_o.flags;
+            misc_o.tag = misc_i.tag;
+        end else if (misc_i.op.fmax) begin
+            misc_o.result = max_o.result;
+            misc_o.flags = max_o.flags;
+            misc_o.tag = misc_i.tag;
+        end else if (misc_i.op.fclass) begin
+            misc_o.result = class_o.result;
+            misc_o.flags = '0;
+            misc_o.tag = misc_i.tag;
+        end
+    end
+
+    // start_reg
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni) begin
+            start_capture <= 1'b0;
+        end else if (start_capture) begin
+            start_capture <= 1'b0;
+        end else if (~misc_stall_i&(start_n | start_reg)) begin
+            start_capture <= 1'b1;
+        end
+    end
+
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni) begin
+            start_reg <= '0;
+        end else if (start_capture) begin
+            start_reg <= start_n;
+        end else begin
+            start_reg <= start_reg;
+        end
+    end
+
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni) begin
+            misc_reg_o <= '0;
+            misc_data_vld_o <= '0;
+        end else if (misc_stall_i) begin
+            misc_reg_o <= misc_reg_o;
+            misc_data_vld_o <= misc_data_vld_o;
+        end else if (start_n | start_reg) begin
+            misc_reg_o <= misc_o;
+            misc_data_vld_o <= 1'b1;
+        end else begin
+            misc_data_vld_o <= 1'b0;
+        end
+    end
+
+endmodule
 
