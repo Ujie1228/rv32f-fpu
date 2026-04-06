@@ -197,15 +197,188 @@ package fpu_define;
       logic [9:0]  class2;
       fpu_operation_type op;
       logic [2:0]  rm;
-      logic        req_valid;
-      logic [4:0]  req_tag;
+      logic [4:0]  tag;
     } fpu_div_in_type;
+
+    typedef struct packed {
+      fp_rnd_in_type fp_rnd;
+      logic ready;
+    } fpu_div_out_type;
 
     typedef struct packed {
       logic [31:0] result;
       logic [4:0]  flags;
-      logic        req_valid;
-      logic [4:0]  req_tag;
-    } fpu_div_out_type;
+      logic [4:0]  tag;
+    } fpu_div_reg_out;
+
+    typedef struct packed {
+      logic [2:0] state;
+      logic [5:0] istate;
+      logic [1:0] fmt;
+      logic [2:0] rm;
+      logic [32:0] a;
+      logic [32:0] b;
+      logic [9:0] class_a;
+      logic [9:0] class_b;
+      logic snan;
+      logic qnan;
+      logic infs;
+      logic dbz;
+      logic zero;
+      logic op;
+      logic [6:0] index;
+      logic [26:0] qa;
+      logic [26:0] qb;
+      logic [26:0] q0;
+      logic [26:0] q1;
+      logic [26:0] y;
+      logic [26:0] y0;
+      logic [26:0] y1;
+      logic [26:0] y2;
+      logic [26:0] h0;
+      logic [26:0] h1;
+      logic [26:0] e0;
+      logic [26:0] e1;
+      logic [51:0] r0;
+      logic [51:0] r1;
+      logic sign_fdiv;
+      logic [10:0] exponent_fdiv;
+      logic [55:0] mantissa_fdiv;
+      logic [1:0] counter_fdiv;
+      logic [7:0] exponent_bias;
+      logic sign_rnd;
+      logic [10:0] exponent_rnd;
+      logic [24:0] mantissa_rnd;
+      logic [1:0] remainder_rnd;
+      logic [10:0] counter_rnd;
+      logic [2:0] grs;
+      logic odd;
+      logic [31:0] result;
+      logic [4:0] flags;
+      logic ready;
+    } fp_fdiv_reg_functional_type;
+
+    parameter fp_fdiv_reg_functional_type init_fp_fdiv_reg_functional = '{
+      state : 0,
+      istate : 0,
+      fmt : 0,
+      rm : 0,
+      a : 0,
+      b : 0,
+      class_a : 0,
+      class_b : 0,
+      snan : 0,
+      qnan : 0,
+      infs : 0,
+      dbz : 0,
+      zero : 0,
+      op : 0,
+      index : 0,
+      qa : 0,
+      qb : 0,
+      q0 : 0,
+      q1 : 0,
+      y : 0,
+      y0 : 0,
+      y1 : 0,
+      y2 : 0,
+      h0 : 0,
+      h1 : 0,
+      e0 : 0,
+      e1 : 0,
+      r0 : 0,
+      r1 : 0,
+      sign_fdiv : 0,
+      exponent_fdiv : 0,
+      mantissa_fdiv : 0,
+      counter_fdiv : 0,
+      exponent_bias : 0,
+      sign_rnd : 0,
+      exponent_rnd : 0,
+      mantissa_rnd : 0,
+      remainder_rnd : 0,
+      counter_rnd : 0,
+      grs : 0,
+      odd : 0,
+      result : 0,
+      flags : 0,
+      ready : 0
+    };
+
+    typedef struct packed {
+      logic [2:0] state;
+      logic [4:0] istate;
+      logic [1:0] fmt;
+      logic [2:0] rm;
+      logic [32:0] a;
+      logic [32:0] b;
+      logic [9:0] class_a;
+      logic [9:0] class_b;
+      logic snan;
+      logic qnan;
+      logic infs;
+      logic dbz;
+      logic zero;
+      logic op;
+      logic [26:0] qa;
+      logic [26:0] qb;
+      logic [25:0] q;
+      logic [27:0] e;
+      logic [27:0] r;
+      logic [27:0] m;
+      logic sign_fdiv;
+      logic [10:0] exponent_fdiv;
+      logic [77:0] mantissa_fdiv;
+      logic [1:0] counter_fdiv;
+      logic [7:0] exponent_bias;
+      logic sign_rnd;
+      logic [10:0] exponent_rnd;
+      logic [24:0] mantissa_rnd;
+      logic [1:0] remainder_rnd;
+      logic [10:0] counter_rnd;
+      logic [2:0] grs;
+      logic odd;
+      logic [31:0] result;
+      logic [4:0] flags;
+      logic ready;
+    } fp_fdiv_reg_fixed_type;
+
+    parameter fp_fdiv_reg_fixed_type init_fp_fdiv_reg_fixed = '{
+      state : 0,
+      istate : 0,
+      fmt : 0,
+      rm : 0,
+      a : 0,
+      b : 0,
+      class_a : 0,
+      class_b : 0,
+      snan : 0,
+      qnan : 0,
+      infs : 0,
+      dbz : 0,
+      zero : 0,
+      op : 0,
+      qa : 0,
+      qb : 0,
+      q : 0,
+      e : 0,
+      r : 0,
+      m : 0,
+      sign_fdiv : 0,
+      exponent_fdiv : 0,
+      mantissa_fdiv : 0,
+      counter_fdiv : 0,
+      exponent_bias : 0,
+      sign_rnd : 0,
+      exponent_rnd : 0,
+      mantissa_rnd : 0,
+      remainder_rnd : 0,
+      counter_rnd : 0,
+      grs : 0,
+      odd : 0,
+      result : 0,
+      flags : 0,
+      ready : 0
+    };
 
 endpackage

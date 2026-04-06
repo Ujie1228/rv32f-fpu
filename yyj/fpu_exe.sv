@@ -24,6 +24,7 @@ module fpu_exe(
     input logic cvt_ready_i,
     input logic fma_ready_i,
     input logic div_ready_i,
+    input logic div_busy_i,
 
     output fpu_fma_in_type  req_data_FMA_reg_o,
     output fpu_div_in_type  req_data_DIV_reg_o,
@@ -31,12 +32,16 @@ module fpu_exe(
     output fpu_misc_in_type req_data_MISC_reg_o,
 
     output logic misc_start_o,
+    output logic div_start_o,
 
     input logic resp_ready_i,
     input fpu_misc_out_type resp_misc_reg_i,
-    input logic misc_data_vld_i,
-    output logic misc_reg_empty_o,
+    input fpu_div_out_type  resp_div_reg_i,
+    input logic  misc_data_vld_i,
+    input logic  div_data_vld_i,
 
+    output logic misc_reg_empty_o,
+    output logic div_reg_empty_o,
     output fpu_top_out_type result_o
 
 );
@@ -75,14 +80,44 @@ module fpu_exe(
     // FMA
 
     // DIV
+    assign req_data_DIV.extend1 = extend1_i;
+    assign req_data_DIV.extend2 = extend2_i;
+    assign req_data_DIV.class1 = class1_i;
+    assign req_data_DIV.class2 = class2_i;
+    assign req_data_DIV.op = req_op_i;
+    assign req_data_DIV.rm = req_rm_i;
+    assign req_data_DIV.tag = req_tag_i;
+
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni) begin
+            req_data_DIV_reg_o <= '0;
+            div_start_o <= '0;
+        end else if (req_valid_i & div_ready_i) begin
+            req_data_DIV_reg_o <= req_data_DIV;
+            div_start_o <= 1'b1;
+        end else begin
+            div_start_o <= 1'b0;
+        end
+    end
 
     // 输出控制 & empty
+    //misc
     always_comb begin
         misc_reg_empty_o = 1'b1;
         if (misc_data_vld_i & ~resp_ready_i) begin
             misc_reg_empty_o = 1'b0;
         end else if (misc_data_vld_i & resp_ready_i) begin
             misc_reg_empty_o = 1'b1;
+        end
+    end
+
+    //div
+    always_comb begin
+        div_reg_empty_o = 1'b1;
+        if (div_data_vld_i & ~resp_ready_i) begin
+            div_reg_empty_o = 1'b0;
+        end else if (div_data_vld_i & resp_ready_i) begin
+            div_reg_empty_o = 1'b1;
         end
     end
 

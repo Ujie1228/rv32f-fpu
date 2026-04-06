@@ -6,14 +6,18 @@ module fp_fdiv #(
     input logic clk_i,
     input logic rst_ni,
 
+    input logic div_stall_i,
     input logic div_start_i,
 
     input  fpu_div_in_type  fp_fdiv_i,
     output fpu_div_out_type fp_fdiv_o,
+    output fpu_div_reg_out  div_reg_o,
     input  fpu_mac_out_type fp_mac_o,
     output fpu_mac_in_type  fp_mac_i,
+    input  fpu_rnd_out_type div_rnd_o,
+
     output logic div_ready_o,
-    input  logic clear
+    output logic div_data_vld_o
 );
 
   fp_fdiv_reg_functional_type r;
@@ -570,10 +574,6 @@ module fp_fdiv #(
 
         end
 
-        if (clear == 1) begin
-          v.ready = 0;
-        end
-
         fp_fdiv_o.fp_rnd.sig = v.sign_rnd;
         fp_fdiv_o.fp_rnd.expo = v.exponent_rnd;
         fp_fdiv_o.fp_rnd.mant = v.mantissa_rnd;
@@ -593,8 +593,8 @@ module fp_fdiv #(
 
       end
 
-      always_ff @(posedge clock) begin
-        if (reset == 0) begin
+      always_ff @(posedge clk_i) begin
+        if (rst_ni == 0) begin
           r <= init_fp_fdiv_reg_functional;
         end else begin
           r <= rin;
@@ -755,10 +755,6 @@ module fp_fdiv #(
 
         end
 
-        if (clear == 1) begin
-          v_fix.ready = 0;
-        end
-
         fp_fdiv_o.fp_rnd.sig = v_fix.sign_rnd;
         fp_fdiv_o.fp_rnd.expo = v_fix.exponent_rnd;
         fp_fdiv_o.fp_rnd.mant = v_fix.mantissa_rnd;
@@ -778,8 +774,8 @@ module fp_fdiv #(
 
       end
 
-      always_ff @(posedge clock) begin
-        if (reset == 0) begin
+      always_ff @(posedge clk_i) begin
+        if (rst_ni == 0) begin
           r_fix <= init_fp_fdiv_reg_fixed;
         end else begin
           r_fix <= rin_fix;
@@ -789,5 +785,21 @@ module fp_fdiv #(
     end
 
   endgenerate
+
+  assign div_ready_o = ~div_stall_i;
+
+  always_ff @(posedge clk_i or negedge rst_ni) begin
+      if (~rst_ni) begin
+          div_reg_o <= '0;
+          div_data_vld_o <= '0;
+      end else if (fp_fdiv_o.ready) begin
+          div_reg_o.reesult <= div_rnd_o.result;
+          div_reg_o.flags <= div_rnd_o.flags;
+          div_reg_o.tag <= fp_fdiv_i.tag;
+          div_data_vld_o <= 1'b1;
+      end else begin
+          div_data_vld_o <= 1'b0;
+      end
+  end
 
 endmodule
