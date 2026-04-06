@@ -29,7 +29,7 @@ module fpu_misc(
     // start
     logic start_n;
     logic start_reg;
-    logic start_capture; // 持续一个时钟周期，用于锁存start_m
+    logic start_capture; // 持续一个时钟周期，用于锁存start_n 
 
     //
     assign start_n = misc_start_i;
