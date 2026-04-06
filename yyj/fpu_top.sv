@@ -102,6 +102,8 @@ module fpu_top (
         end
     end
 
+    //div_busy_i
+    logic div_busy_i;
 
     // outports wire
     wire       	req_ready_o;
@@ -169,7 +171,7 @@ module fpu_top (
     );
 
 
-
+    //misc
     wire   	misc_o;
     wire   	misc_ready_o;
     wire   	misc_data_vld_o;
@@ -185,5 +187,51 @@ module fpu_top (
     );
 
 
+    //div
+    wire   	div_o;
+    wire    div_reg_o;
+    wire   	div_ready_o;
+    wire   	div_data_vld_o;
+
+    fpu_rnd_out_type  div_rnd_o;
+
+    fpu_mac_in_type  mac_i;
+    fpu_mac_out_type mac_o;
+
+    fpu_div u_fpu_div(
+        .clk_i           	(clk_i      ),
+        .rst_ni          	(rst_ni     ),
+        .div_stall_i    	(div_stall_o       ),
+        .div_start_i        (                  ),
+        .fp_fdiv_i          (req_data_DIV_reg_o),
+        .fp_fdiv_o          (div_o             ),
+        .div_reg_o          (div_reg_o         ),
+        .fp_mac_o           (mac_o             ),
+        .fp_mac_i           (mac_i             ),
+        .fp_rnd_o           (div_rnd_o         ),
+        .div_ready_o        (div_ready_o       ),
+        .div_data_vld_o     (div_data_vld_o    )
+    );
+
+    fpu_mac u_fpu_mac(
+        .mac_i              (mac_i),
+        .mac_o              (mac_i)
+    );
+
+    fpu_rnd u_fpu_rnd(
+        .rnd_i              (div_o.fp_rnd),
+        .rnd_o              (div_rnd_o)
+    );
+
+    //div_busy_i控制
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni) begin
+            div_busy_i <= 0;
+        end else if (req_valid_i & div_ready_i) begin
+            div_busy_i <= 1;
+        end else if (div_data_vld_o & top_i.resp_ready_i) begin
+            div_busy_i <= 0;
+        end
+    end
 
 endmodule
