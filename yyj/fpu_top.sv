@@ -188,7 +188,7 @@ module fpu_top (
 
 
     //div
-    wire   	div_o;
+    wire   	div_nrnd;
     wire    div_reg_o;
     wire   	div_ready_o;
     wire   	div_data_vld_o;
@@ -204,7 +204,7 @@ module fpu_top (
         .div_stall_i    	(div_stall_o       ),
         .div_start_i        (                  ),
         .fp_fdiv_i          (req_data_DIV_reg_o),
-        .fp_fdiv_o          (div_o             ),
+        .fp_fdiv_o          (div_nrnd             ),
         .div_reg_o          (div_reg_o         ),
         .fp_mac_o           (mac_o             ),
         .fp_mac_i           (mac_i             ),
@@ -218,19 +218,21 @@ module fpu_top (
         .mac_o              (mac_i)
     );
 
-    fpu_rnd u_fpu_rnd(
+    fpu_rnd u1_fpu_rnd(
         .rnd_i              (div_o.fp_rnd),
         .rnd_o              (div_rnd_o)
     );
 
     //div_busy_i控制
+    logic div_busy;
+    
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin
-            div_busy_i <= 0;
+            div_busy <= 0;
         end else if (req_valid_i & div_ready_i) begin
-            div_busy_i <= 1;
-        end else if (div_data_vld_o & top_i.resp_ready_i) begin
-            div_busy_i <= 0;
+            div_busy <= 1;
+        end else if (div_nrnd.ready) begin
+            div_busy <= 0;
         end
     end
 

@@ -1,6 +1,6 @@
 import fpu_define::*;
 
-module fp_fdiv #(
+module fpu_div #(
     parameter PERFORMANCE = 0
 ) (
     input logic clk_i,
@@ -14,10 +14,12 @@ module fp_fdiv #(
     output fpu_div_reg_out  div_reg_o,
     input  fpu_mac_out_type fp_mac_o,
     output fpu_mac_in_type  fp_mac_i,
-    input  fpu_rnd_out_type div_rnd_o,
+    input  fpu_rnd_out_type div_rnd_i,
 
     output logic div_ready_o,
-    output logic div_data_vld_o
+    output logic div_data_vld_o,
+
+    input logic div_reg_empty_i  // 保证未被取走时vld_o一直为1
 );
 
   fp_fdiv_reg_functional_type r;
@@ -277,7 +279,7 @@ module fp_fdiv #(
           end
           v.istate = 0;
           v.ready  = 0;
-        end else if ((r.state == 0) & (div_start_i == 0)) begin
+        end else if (r.state == 0) begin
           v.ready  = 0;
         end else if (r.state == 1) begin
           if (v.istate == 8) begin
@@ -792,9 +794,12 @@ module fp_fdiv #(
       if (~rst_ni) begin
           div_reg_o <= '0;
           div_data_vld_o <= '0;
+      end else if (~div_reg_empty_i) begin   // vld与reg保持
+          div_data_vld_o <= div_data_vld_o;
+          div_reg_o <= div_reg_o;
       end else if (fp_fdiv_o.ready) begin
-          div_reg_o.reesult <= div_rnd_o.result;
-          div_reg_o.flags <= div_rnd_o.flags;
+          div_reg_o.result <= div_rnd_i.result;
+          div_reg_o.flags <= div_rnd_i.flags;
           div_reg_o.tag <= fp_fdiv_i.tag;
           div_data_vld_o <= 1'b1;
       end else begin

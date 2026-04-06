@@ -100,27 +100,32 @@ module fpu_exe(
         end
     end
 
-    // 输出控制 & empty
-    //misc
-    always_comb begin
-        misc_reg_empty_o = 1'b1;
-        if (misc_data_vld_i & ~resp_ready_i) begin
-            misc_reg_empty_o = 1'b0;
-        end else if (misc_data_vld_i & resp_ready_i) begin
-            misc_reg_empty_o = 1'b1;
-        end
-    end
+    // 输出控制 & empty 设置优先级
 
-    //div
     always_comb begin
+        misc_reg_empty_o = 1'b1; //默认值
         div_reg_empty_o = 1'b1;
-        if (div_data_vld_i & ~resp_ready_i) begin
-            div_reg_empty_o = 1'b0;
-        end else if (div_data_vld_i & resp_ready_i) begin
-            div_reg_empty_o = 1'b1;
+        if (resp_ready_i) begin
+            if (misc_data_vld_i) begin
+                misc_reg_empty_o = 1'b1;
+            end else if (div_data_vld_i) begin
+                div_reg_empty_o = 1'b1;
+            end else if (1) begin
+            end
+        end else if (~resp_ready_i) begin
+            if (misc_data_vld_i) begin
+                misc_reg_empty_o = 1'b0;
+            end
+            if (div_data_vld_i) begin
+                div_reg_empty_o = 1'b0;
+            end
+            if (1) begin
+                
+            end
         end
     end
 
+    // 优先级
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin   
             result_o <= 0;

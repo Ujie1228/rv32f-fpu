@@ -1,6 +1,6 @@
 import fpu_define::*;
 
-module fp_sgnj (
+module fpu_sgnj (
     input  fpu_sgnj_in_type  fp_sgnj_i,
     output fpu_sgnj_out_type fp_sgnj_o
 );

@@ -1,6 +1,6 @@
 import fpu_define::*;
 
-module fp_max (
+module fpu_max (
     input  fpu_max_in_type  fp_max_i,
     output fpu_max_out_type fp_max_o
 );
