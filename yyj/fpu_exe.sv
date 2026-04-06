@@ -53,10 +53,10 @@ module fpu_exe(
     assign req_data_MISC.extend1 = extend1_i;
     assign req_data_MISC.extend2 = extend2_i;
     assign req_data_MISC.op = req_op_i;
-    assign req_data_MISC.rm = req_op_i;
+    assign req_data_MISC.rm = req_rm_i;
     assign req_data_MISC.class1 = class1_i;
     assign req_data_MISC.class2 = class2_i;
-    assign req_data_MISC._tag = req_tag_i;
+    assign req_data_MISC.tag = req_tag_i;
 
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin

@@ -1,8 +1,8 @@
-import fp_wire::*;
+import fpu_define::*;
 
 module fp_max (
-    input  fp_max_in_type  fp_max_i,
-    output fp_max_out_type fp_max_o
+    input  fpu_max_in_type  fp_max_i,
+    output fpu_max_out_type fp_max_o
 );
 
   logic [31:0] data1;
