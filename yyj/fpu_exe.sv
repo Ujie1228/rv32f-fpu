@@ -33,17 +33,22 @@ module fpu_exe(
 
     output logic misc_start_o,
     output logic div_start_o,
+    output logic cvt_start_o,
 
     input logic resp_ready_i,
     input fpu_misc_out_type resp_misc_reg_i,
     input fpu_div_out_type  resp_div_reg_i,
+    input fpu_cvt_out_type  resp_cvt_reg_i,
+
     input logic  misc_data_vld_i,
     input logic  div_data_vld_i,
+    input logic  cvt_data_vld_i,
 
     output logic misc_reg_empty_o,
     output logic div_reg_empty_o,
-    output fpu_top_out_type result_o
+    output logic cvt_reg_empty_o,
 
+    output fpu_top_out_type result_o
 );
 
     // 输入寄存器控制
@@ -76,7 +81,25 @@ module fpu_exe(
     end
 
     // CVT
+    assign req_data_CVT.data = data1_i;
+    assign req_data_CVT.extend = extend1_i;
+    assign req_data_CVT.op = req_op_i;
+    assign req_data_CVT.rm = req_rm_i;
+    assign req_data_CVT.classification = class1_i;
+    assign req_data_CVT.tag = req_tag_i;
 
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni) begin
+            req_data_CVT_reg_o <= '0;
+            cvt_start_o <= '0;
+        end else if (req_valid_i & cvt_ready_i) begin
+            req_data_CVT_reg_o <= req_data_CVT;
+            cvt_start_o <= 1'b1;
+        end else begin
+            cvt_start_o <= 1'b0;
+        end
+    end
+    
     // FMA
 
     // DIV
@@ -105,12 +128,16 @@ module fpu_exe(
     always_comb begin
         misc_reg_empty_o = 1'b1; //默认值
         div_reg_empty_o = 1'b1;
+        cvt_reg_empty_o = 1'b1;
         if (resp_ready_i) begin
             if (misc_data_vld_i) begin
                 misc_reg_empty_o = 1'b1;
             end else if (div_data_vld_i) begin
                 div_reg_empty_o = 1'b1;
+            end else if (cvt_data_vld_i) begin
+                cvt_reg_empty_o = 1'b1;
             end else if (1) begin
+                
             end
         end else if (~resp_ready_i) begin
             if (misc_data_vld_i) begin
@@ -118,6 +145,9 @@ module fpu_exe(
             end
             if (div_data_vld_i) begin
                 div_reg_empty_o = 1'b0;
+            end
+            if (cvt_data_vld_i) begin
+                cvt_reg_empty_o = 1'b0;
             end
             if (1) begin
                 

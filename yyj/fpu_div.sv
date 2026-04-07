@@ -306,7 +306,7 @@ module fpu_div #(
           v.b = fp_fdiv_i.data2;
           v.class_a = fp_fdiv_i.class1;
           v.class_b = fp_fdiv_i.class2;
-          v.fmt = fp_fdiv_i.fmt;
+          v.fmt = 0;
           v.rm = fp_fdiv_i.rm;
           v.snan = 0;
           v.qnan = 0;
@@ -649,7 +649,7 @@ module fpu_div #(
           v_fix.b = fp_fdiv_i.data2;
           v_fix.class_a = fp_fdiv_i.class1;
           v_fix.class_b = fp_fdiv_i.class2;
-          v_fix.fmt = fp_fdiv_i.fmt;
+          v_fix.fmt = 0;
           v_fix.rm = fp_fdiv_i.rm;
           v_fix.snan = 0;
           v_fix.qnan = 0;

@@ -199,16 +199,16 @@ module fpu_top (
     fpu_mac_out_type mac_o;
 
     fpu_div u_fpu_div(
-        .clk_i           	(clk_i      ),
-        .rst_ni          	(rst_ni     ),
+        .clk_i           	(clk_i             ),
+        .rst_ni          	(rst_ni            ),
         .div_stall_i    	(div_stall_o       ),
         .div_start_i        (                  ),
         .fp_fdiv_i          (req_data_DIV_reg_o),
-        .fp_fdiv_o          (div_nrnd             ),
+        .fp_fdiv_o          (div_nrnd          ),
         .div_reg_o          (div_reg_o         ),
         .fp_mac_o           (mac_o             ),
         .fp_mac_i           (mac_i             ),
-        .fp_rnd_o           (div_rnd_o         ),
+        .div_rnd_i          (div_rnd_o         ),
         .div_ready_o        (div_ready_o       ),
         .div_data_vld_o     (div_data_vld_o    )
     );
@@ -235,5 +235,34 @@ module fpu_top (
             div_busy <= 0;
         end
     end
+
+    //cvt
+    wire   	cvt_o;
+    wire   	cvt_ready_o;
+    wire   	cvt_data_vld_o;
+
+    fpu_rnd_in_type  cvt_rnd_i;
+    fpu_rnd_out_type cvt_rnd_o;
+
+
+    fpu_cvt u_fpu_cvt(
+        .clk_i              (clk_i              ),
+        .rst_ni             (rst_ni             ),
+        .cvt_stall_i        (cvt_stall_o        ),
+        .cvt_start_i        (                   ),
+        .cvt_reg_i          (req_data_CVT_reg_o ),
+        .cvt_reg_o          (cvt_o             ),
+        .lzc_i              (lzc4_32_o          ),
+        .lzc_o              (lzc4_32_i          ),
+        .cvt_rnd_i          (cvt_rnd_reg_o      ),
+        .cvt_rnd_o          (cvt_rnd_reg_i      ),
+        .cvt_ready_o        (cvt_ready_o       ),
+        .cvt_data_vld_o     (cvt_data_vld_o    )
+    );
+
+    fpu_rnd u2_fpu_rnd(
+        .rnd_i              (cvt_rnd_reg_i),
+        .rnd_o              (cvt_rnd_reg_o)
+    );
 
 endmodule
