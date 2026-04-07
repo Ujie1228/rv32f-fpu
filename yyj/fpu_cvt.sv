@@ -1,8 +1,8 @@
-import lzc_wire::*;
+import lzc_define::*;
 import fpu_define::*;
 
 module fpu_cvt #(
-    parameter RISCV = 0
+    parameter RISCV = 1 // 默认执行RISC-V标准
 ) (
     input logic     clk_i,
     input logic     rst_ni,
