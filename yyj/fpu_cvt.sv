@@ -56,7 +56,7 @@ module fpu_cvt #(
         always_comb begin
 
           v_f2i.data = fp_cvt_f2i_i.data;
-          v_f2i.op = fp_cvt_f2i_i.op.fcvt_uf2i;
+          v_f2i.op = fp_cvt_f2i_i.op.fcvt_op;
           v_f2i.rm = fp_cvt_f2i_i.rm;
           v_f2i.classification = fp_cvt_f2i_i.classification;
 
@@ -170,7 +170,7 @@ module fpu_cvt #(
         always_comb begin
 
           v_f2i.data = fp_cvt_f2i_i.data;
-          v_f2i.op = fp_cvt_f2i_i.op.fcvt_uf2i;
+          v_f2i.op = fp_cvt_f2i_i.op.fcvt_op;
           v_f2i.rm = fp_cvt_f2i_i.rm;
           v_f2i.classification = fp_cvt_f2i_i.classification;
 
@@ -294,7 +294,7 @@ module fpu_cvt #(
     always_comb begin
 
       v_i2f.data = fp_cvt_i2f_i.data;
-      v_i2f.op = fp_cvt_i2f_i.op.fcvt_ui2f;
+      v_i2f.op = fp_cvt_i2f_i.op.fcvt_op;    
       v_i2f.fmt = 0;
       v_i2f.rm = fp_cvt_i2f_i.rm;
 

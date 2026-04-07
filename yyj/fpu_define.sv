@@ -17,8 +17,7 @@ package fpu_define;
       logic fclass;
       logic fcvt_i2f;
       logic fcvt_f2i;
-      logic fcvt_ui2f;
-      logic fcvt_uf2i;
+      logic fcvt_op;
     } fpu_operation_type;
 
     localparam FMA = 4'b0001;
