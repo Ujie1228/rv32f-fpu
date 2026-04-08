@@ -576,19 +576,19 @@ module fpu_div #(
 
         end
 
-        fpu_fdiv_o.fp_rnd.sig = v.sign_rnd;
-        fpu_fdiv_o.fp_rnd.expo = v.exponent_rnd;
-        fpu_fdiv_o.fp_rnd.mant = v.mantissa_rnd;
-        fpu_fdiv_o.fp_rnd.rema = v.remainder_rnd;
-        fpu_fdiv_o.fp_rnd.fmt = v.fmt;
-        fpu_fdiv_o.fp_rnd.rm = v.rm;
-        fpu_fdiv_o.fp_rnd.grs = v.grs;
-        fpu_fdiv_o.fp_rnd.snan = v.snan;
-        fpu_fdiv_o.fp_rnd.qnan = v.qnan;
-        fpu_fdiv_o.fp_rnd.dbz = v.dbz;
-        fpu_fdiv_o.fp_rnd.infs = v.infs;
-        fpu_fdiv_o.fp_rnd.zero = v.zero;
-        fpu_fdiv_o.fp_rnd.diff = 1'h0;
+        fpu_fdiv_o.fpu_rnd.sig = v.sign_rnd;
+        fpu_fdiv_o.fpu_rnd.expo = v.exponent_rnd;
+        fpu_fdiv_o.fpu_rnd.mant = v.mantissa_rnd;
+        fpu_fdiv_o.fpu_rnd.rema = v.remainder_rnd;
+        fpu_fdiv_o.fpu_rnd.fmt = v.fmt;
+        fpu_fdiv_o.fpu_rnd.rm = v.rm;
+        fpu_fdiv_o.fpu_rnd.grs = v.grs;
+        fpu_fdiv_o.fpu_rnd.snan = v.snan;
+        fpu_fdiv_o.fpu_rnd.qnan = v.qnan;
+        fpu_fdiv_o.fpu_rnd.dbz = v.dbz;
+        fpu_fdiv_o.fpu_rnd.infs = v.infs;
+        fpu_fdiv_o.fpu_rnd.zero = v.zero;
+        fpu_fdiv_o.fpu_rnd.diff = 1'h0;
         fpu_fdiv_o.ready = v.ready;
 
         rin = v;

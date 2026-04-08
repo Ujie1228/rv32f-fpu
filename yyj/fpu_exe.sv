@@ -20,6 +20,10 @@ module fpu_exe(
 
     input logic req_valid_i,
     input logic req_ready_i,  // op选择之后的ready
+    input logic misc_ready_i,
+    input logic div_ready_i,
+    input logic cvt_ready_i,
+    input logic fma_ready_i,
     input logic div_busy_i,
 
     input logic misc_stall_i,
@@ -78,7 +82,7 @@ module fpu_exe(
             misc_start_o <= '0;
         end else if (misc_stall_i) begin
             misc_start_o <= misc_start_o;
-        end else if (req_valid_i & req_ready_i) begin
+        end else if (req_valid_i & misc_ready_i & (op_class_i ==MISC)) begin
             req_data_MISC_reg_o <= req_data_MISC;
             misc_start_o <= 1'b1;
         end else begin
@@ -100,7 +104,7 @@ module fpu_exe(
             cvt_start_o <= '0;
         end else if (cvt_stall_i) begin
             cvt_start_o <= cvt_start_o;
-        end else if (req_valid_i & req_ready_i) begin
+        end else if (req_valid_i & cvt_ready_i & (op_class_i ==CVT)) begin
             req_data_CVT_reg_o <= req_data_CVT;
             cvt_start_o <= 1'b1;
         end else begin
@@ -125,7 +129,7 @@ module fpu_exe(
             fma_start_o <= '0;
         end else if (fma_stall_i) begin
             fma_start_o <= fma_start_o;
-        end else if (req_valid_i & req_ready_i) begin
+        end else if (req_valid_i & fma_ready_i & (op_class_i ==FMA)) begin
             req_data_FMA_reg_o <= req_data_FMA;
             fma_start_o <= 1'b1;
         end else begin
@@ -146,7 +150,7 @@ module fpu_exe(
         if (~rst_ni) begin
             req_data_DIV_reg_o <= '0;
             div_start_o <= '0;
-        end else if (req_valid_i & req_ready_i) begin
+        end else if (req_valid_i & div_ready_i & (op_class_i ==DIV)) begin
             req_data_DIV_reg_o <= req_data_DIV;
             div_start_o <= 1'b1;
         end else begin

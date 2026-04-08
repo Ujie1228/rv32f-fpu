@@ -219,7 +219,7 @@ module fpu_top (
     );
 
     fpu_rnd u1_fpu_rnd(
-        .rnd_i              (div_o.fp_rnd),
+        .rnd_i              (div_nrnd.fp_rnd),
         .rnd_o              (div_rnd_o)
     );
 
@@ -263,6 +263,16 @@ module fpu_top (
     fpu_rnd u2_fpu_rnd(
         .rnd_i              (cvt_rnd_reg_i),
         .rnd_o              (cvt_rnd_reg_o)
+    );
+
+    //fma
+
+    fpu_fma u_fpu_fma(
+
+    );
+
+    fpu_rnd u3_fpu_rnd(
+
     );
 
 endmodule

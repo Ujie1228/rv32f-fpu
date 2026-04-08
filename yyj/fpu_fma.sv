@@ -8,7 +8,7 @@ module fpu_fma (
     input logic fma_stall_i,
     input logic fma_start_i,
 
-    input fpu_fma_in_type fpu_fma_i,
+    input  fpu_fma_in_type fpu_fma_i,
     output fpu_fma_out_type fpu_fma_o,
     output fpu_fma_reg_out fma_reg_o,
     input  fpu_rnd_out_type fma_rnd_i,
@@ -276,13 +276,18 @@ module fpu_fma (
     end else if (fma_stall_i) begin
       r_1 <= r_1;
       r_2 <= r_2;
+      fma_reg_o <= fma_reg_o;
+      fma_data_vld_o <= fma_data_vld_o;
     end else begin
       r_1 <= rin_1;
       r_2 <= rin_2;
       if (fpu_fma_o.ready) begin
         fma_reg_o.result <= fma_rnd_i.result;
-        
+        fma_reg_o.flags <= fma_rnd_i.flags;
+        fma_reg_o.tag <= fpu_fma_o.tag;
+        fma_data_vld_o <= 1'b1;
       end else begin
+        fma_data_vld_o <= 1'b0;
       end
     end
   end 
