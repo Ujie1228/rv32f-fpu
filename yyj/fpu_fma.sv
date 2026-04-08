@@ -13,8 +13,8 @@ module fpu_fma (
     output fpu_fma_reg_out fma_reg_o,
     input  fpu_rnd_out_type fma_rnd_i,
 
-    input lzc_128_out_type lzc_o,
-    output lzc_128_in_type lzc_i,
+    input lzc_128_out_type lzc_i,
+    output lzc_128_in_type lzc_o,
 
     output logic fma_ready_o,
     output logic fma_data_vld_o,
@@ -207,8 +207,8 @@ module fpu_fma (
 
     v_2.bias = 126;
 
-    lzc_i.a = {v_2.mantissa_mac[75:0], {52{1'b1}}};
-    v_2.counter_mac = ~lzc_o.c;
+    lzc_o.a = {v_2.mantissa_mac[75:0], {52{1'b1}}};
+    v_2.counter_mac = ~lzc_i.c;
     v_2.mantissa_mac = v_2.mantissa_mac << v_2.counter_mac;
 
     v_2.sign_rnd = v_2.sign_mac;

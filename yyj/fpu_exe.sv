@@ -21,12 +21,13 @@ module fpu_exe(
     input logic req_valid_i,
     input logic req_ready_i,  // op选择之后的ready
     input logic misc_ready_i,
-    input logic div_ready_i,
     input logic cvt_ready_i,
     input logic fma_ready_i,
+    input logic div_ready_i,
     input logic div_busy_i,
 
     input logic misc_stall_i,
+    input logic div_stall_i,
     input logic cvt_stall_i,
     input logic fma_stall_i,
 
@@ -42,9 +43,9 @@ module fpu_exe(
 
     input logic resp_ready_i,
     input fpu_misc_out_type resp_misc_reg_i,
-    input fpu_div_reg_out  resp_div_reg_i,
+    input fpu_div_reg_out   resp_div_reg_i,
     input fpu_cvt_out_type  resp_cvt_reg_i,
-    input fpu_fma_reg_out resp_fma_reg_i,
+    input fpu_fma_reg_out   resp_fma_reg_i,
 
     input logic  misc_data_vld_i,
     input logic  div_data_vld_i,
@@ -56,7 +57,9 @@ module fpu_exe(
     output logic cvt_reg_empty_o,
     output logic fma_reg_empty_o,
 
-    output fpu_top_out_type result_o
+    output logic [31:0] resp_result_o,
+    output logic [4:0]  resp_flags_o,
+    output logic [4:0]  resp_tag_o
 );
 
     // 输入寄存器控制
@@ -150,6 +153,8 @@ module fpu_exe(
         if (~rst_ni) begin
             req_data_DIV_reg_o <= '0;
             div_start_o <= '0;
+        end else if (div_stall_i) begin
+            div_start_o <= div_start_o;
         end else if (req_valid_i & div_ready_i & (op_class_i ==DIV)) begin
             req_data_DIV_reg_o <= req_data_DIV;
             div_start_o <= 1'b1;
@@ -193,16 +198,25 @@ module fpu_exe(
 
     // 优先级
     always_ff @(posedge clk_i or negedge rst_ni) begin
-        if (~rst_ni) begin   
+        if (~rst_ni) begin
             result_o <= 0;
         end else if (misc_data_vld_i & resp_ready_i) begin
-            // 以下是result赋值
-            // ...
-
-            
+            resp_result_o <= resp_misc_reg_i.result;
+            resp_flags_o <= resp_misc_reg_i.flags;
+            resp_tag_o <= resp_misc_reg_i.tag;
+        end else if (div_data_vld_i & resp_ready_i) begin
+            resp_result_o <= resp_div_reg_i.result;
+            resp_flags_o <= resp_div_reg_i.flags;
+            resp_tag_o <= resp_div_reg_i.tag;
+        end else if (cvt_data_vld_i & resp_ready_i) begin
+            resp_result_o <= resp_cvt_reg_i.result;
+            resp_flags_o <= resp_cvt_reg_i.flags;
+            resp_tag_o <= resp_cvt_reg_i.tag;
+        end else if (fma_data_vld_i & resp_ready_i) begin
+            resp_result_o <= resp_fma_reg_i.result;
+            resp_flags_o <= resp_fma_reg_i.flags;
+            resp_tag_o <= resp_fma_reg_i.tag;
         end
     end
-
-
 
 endmodule

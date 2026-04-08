@@ -102,21 +102,37 @@ module fpu_top (
         end
     end
 
-    //div_busy_i
-    logic div_busy_i;
+
 
     // outports wire
+    wire        misc_ready_i;
+    wire        cvt_ready_i;
+    wire        fma_ready_i;
+    wire        div_ready_i;
     wire       	req_ready_o;
+
+    wire       	misc_data_vld_i;
+    wire       	cvt_data_vld_i;
+    wire       	fma_data_vld_i;
+    wire       	div_data_vld_i;
     wire       	resp_valid_o;
+
+    wire       	misc_reg_empty_i;
+    wire       	cvt_reg_empty_i;
+    wire       	fma_reg_empty_i;
+    wire       	div_reg_empty_i;
+
     wire       	misc_stall_o;
     wire       	cvt_stall_o;
     wire       	fma_stall_o;
     wire       	div_stall_o;
 
+    logic       div_busy;
+
     fpu_control u_fpu_control(
         .clk_i            	( clk_i             ),
         .rst_ni           	( rst_ni            ),
-        .op_class_i       	( op_class_i        ),
+        .op_class_i       	( op_class          ),
         .misc_ready_i     	( misc_ready_i      ),
         .cvt_ready_i      	( cvt_ready_i       ),
         .fma_ready_i      	( fma_ready_i       ),
@@ -131,105 +147,145 @@ module fpu_top (
         .cvt_reg_empty_i  	( cvt_reg_empty_i   ),
         .fma_reg_empty_i  	( fma_reg_empty_i   ),
         .div_reg_empty_i  	( div_reg_empty_i   ),
-        .div_busy_i       	( div_busy_i        ),
+        .div_busy_i       	( div_busy          ),
         .misc_stall_o     	( misc_stall_o      ),
         .cvt_stall_o      	( cvt_stall_o       ),
         .fma_stall_o      	( fma_stall_o       ),
         .div_stall_o      	( div_stall_o       )
     );
 
-    wire        	req_data_FMA_reg_o;
-    wire        	req_data_DIV_reg_o;
-    wire        	req_data_CVT_reg_o;
-    wire        	req_data_MISC_reg_o;
+    wire  fpu_fma_in_type       req_data_FMA_reg_o;
+    wire  fpu_div_in_type       req_data_DIV_reg_o;
+    wire  fpu_cvt_in_type       req_data_CVT_reg_o;
+    wire  fpu_misc_in_type      req_data_MISC_reg_o;
+
+    wire        misc_start_o;
+    wire        div_start_o;
+    wire        cvt_start_o;
+    wire        fma_start_o;
+
+    wire  fpu_misc_out_type     resp_misc_reg_i;
+    wire  fpu_div_reg_out       resp_div_reg_i;
+    wire  fpu_cvt_out_type      resp_cvt_reg_i;
+    wire  fpu_fma_reg_out       resp_fma_reg_i;
 
     fpu_exe u_fpu_exe(
         .clk_i               	( clk_i                ),
         .rst_ni              	( rst_ni               ),
-        .data1_i             	( data1_i              ),
-        .data2_i             	( data2_i              ),
-        .data3_i             	( data3_i              ),
-        .extend1_i           	( extend1_i            ),
-        .extend2_i           	( extend2_i            ),
-        .extend3_i           	( extend3_i            ),
-        .class1_i            	( class1_i             ),
-        .class2_i            	( class2_i             ),
-        .class3_i            	( class3_i             ),
-        .req_op_i            	( req_op_i             ),
-        .op_class_i          	( op_class_i           ),
-        .req_rm_i            	( req_rm_i             ),
-        .req_tag_i           	( req_tag_i            ),
-        .req_valid_i         	( req_valid_i          ),
+
+        .data1_i             	( top_i.req_data1_i    ),
+        .data2_i             	( top_i.req_data2_i    ),
+        .data3_i             	( top_i.req_data3_i    ),
+        .extend1_i           	( extend1              ),
+        .extend2_i           	( extend2              ),
+        .extend3_i           	( extend3              ),
+        .class1_i            	( class1               ),
+        .class2_i            	( class2               ),
+        .class3_i            	( class3               ),
+        .req_op_i            	( op                   ),
+        .op_class_i          	( op_class             ),
+        .req_rm_i            	( top_i.req_rm_i       ),
+        .req_tag_i           	( top_i.req_tag_i      ),
+
+        .req_valid_i         	( top_i.req_valid_i    ),
+        .req_ready_i            ( req_ready_o          ),
         .misc_ready_i        	( misc_ready_i         ),
         .cvt_ready_i         	( cvt_ready_i          ),
         .fma_ready_i         	( fma_ready_i          ),
         .div_ready_i         	( div_ready_i          ),
+        .div_busy_i             ( div_busy             ),
+
+        .misc_stall_i           ( misc_stall_o         ),
+        .div_stall_i            ( div_stall_o          ),
+        .cvt_stall_i            ( cvt_stall_o          ),
+        .fma_stall_i            ( fma_stall_o          ),
+
         .req_data_FMA_reg_o  	( req_data_FMA_reg_o   ),
         .req_data_DIV_reg_o  	( req_data_DIV_reg_o   ),
         .req_data_CVT_reg_o  	( req_data_CVT_reg_o   ),
-        .req_data_MISC_reg_o 	( req_data_MISC_reg_o  )
+        .req_data_MISC_reg_o 	( req_data_MISC_reg_o  ),
+
+        .misc_start_o           ( misc_start_o         ),
+        .div_start_o            ( div_start_o          ),
+        .cvt_start_o            ( cvt_start_o          ),
+        .fma_start_o            ( fma_start_o          ),
+
+        .resp_ready_i           ( top_i.resp_ready_i   ),
+        .resp_misc_reg_i        ( resp_misc_reg_i      ),
+        .resp_div_reg_i         ( resp_div_reg_i       ),
+        .resp_cvt_reg_i         ( resp_cvt_reg_i       ),
+        .resp_fma_reg_i         ( resp_fma_reg_i       ),
+
+        .misc_data_vld_i        ( misc_data_vld_i      ),
+        .div_data_vld_i         ( div_data_vld_i       ),
+        .cvt_data_vld_i         ( cvt_data_vld_i       ),
+        .fma_data_vld_i         ( fma_data_vld_i       ),
+
+        .misc_reg_empty_o       ( misc_reg_empty_i     ),
+        .div_reg_empty_o        ( div_reg_empty_i      ),
+        .cvt_reg_empty_o        ( cvt_reg_empty_i      ),
+        .fma_reg_empty_o        ( fma_reg_empty_i      ),
+
+        .resp_result_o          ( top_o.resp_result_o  ),
+        .resp_flags_o           ( top_o.resp_flags_o   ),
+        .resp_tag_o             ( top_o.resp_tag_o     )
     );
 
+    //top_o
+    assign top_o.req_ready_o = req_ready_o;
+    assign top_o.resp_valid_o = resp_valid_o;
 
     //misc
-    wire   	misc_o;
-    wire   	misc_ready_o;
-    wire   	misc_data_vld_o;
-
     fpu_misc u_fpu_misc(
-        .clk_i           	( clk_i            ),
-        .rst_ni          	( rst_ni           ),
-        .misc_stall_i    	( misc_stall_o     ),
-        .misc_i          	( req_data_MISC_reg_o           ),
-        .misc_o          	( misc_o           ),
-        .misc_ready_o    	( misc_ready_o     ),
-        .misc_data_vld_o 	( misc_data_vld_o  )
+        .clk_i           	( clk_i               ),
+        .rst_ni          	( rst_ni              ),
+        .misc_stall_i    	( misc_stall_o        ),
+        .misc_start_i       ( misc_start_o        ),
+        .misc_reg_i         ( req_data_MISC_reg_o ),
+        .misc_reg_o         ( resp_misc_reg_i     ),
+        .misc_ready_o    	( misc_ready_i        ),
+        .misc_data_vld_o 	( misc_data_vld_i     )
     );
 
 
     //div
-    wire   	div_nrnd;
-    wire    div_reg_o;
-    wire   	div_ready_o;
-    wire   	div_data_vld_o;
-
-    fpu_rnd_out_type  div_rnd_o;
-
-    fpu_mac_in_type  mac_i;
-    fpu_mac_out_type mac_o;
+    wire  fpu_div_out_type      div_nrnd;
+    wire  fpu_mac_in_type       mac_i;
+    wire  fpu_mac_out_type      mac_o;
+    wire  fpu_rnd_out_type      div_rnd_o;
 
     fpu_div u_fpu_div(
-        .clk_i           	(clk_i             ),
-        .rst_ni          	(rst_ni            ),
-        .div_stall_i    	(div_stall_o       ),
-        .div_start_i        (                  ),
-        .fp_fdiv_i          (req_data_DIV_reg_o),
-        .fp_fdiv_o          (div_nrnd          ),
-        .div_reg_o          (div_reg_o         ),
-        .fp_mac_o           (mac_o             ),
-        .fp_mac_i           (mac_i             ),
-        .div_rnd_i          (div_rnd_o         ),
-        .div_ready_o        (div_ready_o       ),
-        .div_data_vld_o     (div_data_vld_o    )
+        .clk_i           	( clk_i              ),
+        .rst_ni          	( rst_ni             ),
+        .div_stall_i    	( div_stall_o        ),
+        .div_start_i        ( div_start_o        ),
+        .fpu_fdiv_i         ( req_data_DIV_reg_o ),
+        .fpu_fdiv_o         ( div_nrnd           ),
+        .div_reg_o          ( resp_div_reg_i     ),
+        .fpu_mac_o          ( mac_o              ),
+        .fpu_mac_i          ( mac_i              ),
+        .div_rnd_i          ( div_rnd_o          ),
+        .div_ready_o        ( div_ready_i        ),
+        .div_data_vld_o     ( div_data_vld_i     ),
+        .div_reg_empty_i    ( div_reg_empty_o    )
     );
 
     fpu_mac u_fpu_mac(
         .mac_i              (mac_i),
-        .mac_o              (mac_i)
+        .mac_o              (mac_o)
     );
 
     fpu_rnd u1_fpu_rnd(
-        .rnd_i              (div_nrnd.fp_rnd),
-        .rnd_o              (div_rnd_o)
+        .rnd_i              (div_nrnd.fpu_rnd ),
+        .rnd_o              (div_rnd_o        )
     );
 
-    //div_busy_i控制
-    logic div_busy;
+    //div_busy控制
     
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin
             div_busy <= 0;
-        end else if (req_valid_i & div_ready_i) begin
+        end else if (top_i.req_valid_i & div_ready_i & (op_class ==DIV)) begin
             div_busy <= 1;
         end else if (div_nrnd.ready) begin
             div_busy <= 0;
@@ -237,42 +293,51 @@ module fpu_top (
     end
 
     //cvt
-    wire   	cvt_o;
-    wire   	cvt_ready_o;
-    wire   	cvt_data_vld_o;
-
-    fpu_rnd_in_type  cvt_rnd_i;
-    fpu_rnd_out_type cvt_rnd_o;
-
+    wire  fpu_rnd_in_type       cvt_rnd_i;
+    wire  fpu_rnd_out_type      cvt_rnd_o;
 
     fpu_cvt u_fpu_cvt(
-        .clk_i              (clk_i              ),
-        .rst_ni             (rst_ni             ),
-        .cvt_stall_i        (cvt_stall_o        ),
-        .cvt_start_i        (                   ),
-        .cvt_reg_i          (req_data_CVT_reg_o ),
-        .cvt_reg_o          (cvt_o             ),
-        .lzc_i              (lzc4_32_o          ),
-        .lzc_o              (lzc4_32_i          ),
-        .cvt_rnd_i          (cvt_rnd_reg_o      ),
-        .cvt_rnd_o          (cvt_rnd_reg_i      ),
-        .cvt_ready_o        (cvt_ready_o       ),
-        .cvt_data_vld_o     (cvt_data_vld_o    )
+        .clk_i              ( clk_i              ),
+        .rst_ni             ( rst_ni             ),
+        .cvt_stall_i        ( cvt_stall_o        ),
+        .cvt_start_i        ( cvt_start_o        ),
+        .cvt_reg_i          ( req_data_CVT_reg_o ),
+        .cvt_reg_o          ( resp_cvt_reg_i     ),
+        .lzc_i              ( lzc4_32_o          ),
+        .lzc_o              ( lzc4_32_i          ),
+        .cvt_rnd_i          ( cvt_rnd_o          ),
+        .cvt_rnd_o          ( cvt_rnd_i          ),
+        .cvt_ready_o        ( cvt_ready_i        ),
+        .cvt_data_vld_o     ( cvt_data_vld_i     )
     );
 
     fpu_rnd u2_fpu_rnd(
-        .rnd_i              (cvt_rnd_reg_i),
-        .rnd_o              (cvt_rnd_reg_o)
+        .rnd_i              (cvt_rnd_i),
+        .rnd_o              (cvt_rnd_o)
     );
 
     //fma
+    wire  fpu_fma_out_type      fma_nrnd;
+    wire  fpu_rnd_out_type      fma_rnd_o;
 
     fpu_fma u_fpu_fma(
-
+        .clk_i              ( clk_i              ),
+        .rst_ni             ( rst_ni             ),
+        .fma_stall_i        ( fma_stall_o        ),
+        .fma_start_i        ( fma_start_o        ),
+        .fpu_fma_i          ( req_data_FMA_reg_o ),
+        .fpu_fma_o          ( fma_nrnd           ),
+        .fma_reg_o          ( resp_fma_reg_i     ),
+        .fma_rnd_i          ( fma_rnd_o          ),
+        .lzc_i              ( lzc_128_o          ),
+        .lzc_o              ( lzc_128_i          ),
+        .fma_ready_o        ( fma_ready_i        ),
+        .fma_data_vld_o     ( fma_data_vld_i     )
     );
 
     fpu_rnd u3_fpu_rnd(
-
+        .rnd_i              (fma_nrnd.fpu_rnd ),
+        .rnd_o              (fma_rnd_o        )
     );
 
 endmodule
