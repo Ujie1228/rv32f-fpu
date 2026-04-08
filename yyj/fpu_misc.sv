@@ -28,10 +28,7 @@ module fpu_misc(
 
     // start
     logic start_n;
-    logic start_reg;
-    logic start_capture; // 持续一个时钟周期，用于锁存start_n
 
-    //
     assign start_n = misc_start_i;
 
     assign sgnj_i.data1 = misc_reg_i.data1;
@@ -100,27 +97,6 @@ module fpu_misc(
         end
     end
 
-    // start_reg
-    always_ff @(posedge clk_i or negedge rst_ni) begin
-        if (~rst_ni) begin
-            start_capture <= 1'b0;
-        end else if (start_capture) begin
-            start_capture <= 1'b0;
-        end else if (~misc_stall_i&(start_n | start_reg)) begin
-            start_capture <= 1'b1;
-        end
-    end
-
-    always_ff @(posedge clk_i or negedge rst_ni) begin
-        if (~rst_ni) begin
-            start_reg <= '0;
-        end else if (start_capture) begin
-            start_reg <= start_n;
-        end else begin
-            start_reg <= start_reg;
-        end
-    end
-
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin
             misc_reg_o <= '0;
@@ -128,7 +104,7 @@ module fpu_misc(
         end else if (misc_stall_i) begin
             misc_reg_o <= misc_reg_o;
             misc_data_vld_o <= misc_data_vld_o;
-        end else if (start_n | start_reg) begin
+        end else if (start_n) begin
             misc_reg_o <= misc_o;
             misc_data_vld_o <= 1'b1;
         end else begin

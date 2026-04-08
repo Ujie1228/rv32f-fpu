@@ -19,12 +19,12 @@ module fpu_exe(
     input logic [4:0] req_tag_i,
 
     input logic req_valid_i,
-    // 用这个也行req_ready_o
-    input logic misc_ready_i,
-    input logic cvt_ready_i,
-    input logic fma_ready_i,
-    input logic div_ready_i,
+    input logic req_ready_i,  // op选择之后的ready
     input logic div_busy_i,
+
+    input logic misc_stall_i,
+    input logic cvt_stall_i,
+    input logic fma_stall_i,
 
     output fpu_fma_in_type  req_data_FMA_reg_o,
     output fpu_div_in_type  req_data_DIV_reg_o,
@@ -34,19 +34,23 @@ module fpu_exe(
     output logic misc_start_o,
     output logic div_start_o,
     output logic cvt_start_o,
+    output logic fma_start_o,
 
     input logic resp_ready_i,
     input fpu_misc_out_type resp_misc_reg_i,
-    input fpu_div_out_type  resp_div_reg_i,
+    input fpu_div_reg_out  resp_div_reg_i,
     input fpu_cvt_out_type  resp_cvt_reg_i,
+    input fpu_fma_reg_out resp_fma_reg_i,
 
     input logic  misc_data_vld_i,
     input logic  div_data_vld_i,
     input logic  cvt_data_vld_i,
+    input logic  fma_data_vld_i,
 
     output logic misc_reg_empty_o,
     output logic div_reg_empty_o,
     output logic cvt_reg_empty_o,
+    output logic fma_reg_empty_o,
 
     output fpu_top_out_type result_o
 );
@@ -72,7 +76,9 @@ module fpu_exe(
         if (~rst_ni) begin
             req_data_MISC_reg_o <= '0;
             misc_start_o <= '0;
-        end else if (req_valid_i & misc_ready_i) begin
+        end else if (misc_stall_i) begin
+            misc_start_o <= misc_start_o;
+        end else if (req_valid_i & req_ready_i) begin
             req_data_MISC_reg_o <= req_data_MISC;
             misc_start_o <= 1'b1;
         end else begin
@@ -92,7 +98,9 @@ module fpu_exe(
         if (~rst_ni) begin
             req_data_CVT_reg_o <= '0;
             cvt_start_o <= '0;
-        end else if (req_valid_i & cvt_ready_i) begin
+        end else if (cvt_stall_i) begin
+            cvt_start_o <= cvt_start_o;
+        end else if (req_valid_i & req_ready_i) begin
             req_data_CVT_reg_o <= req_data_CVT;
             cvt_start_o <= 1'b1;
         end else begin
@@ -101,6 +109,29 @@ module fpu_exe(
     end
     
     // FMA
+    assign req_data_FMA.extend1 = extend1_i;
+    assign req_data_FMA.extend2 = extend2_i;
+    assign req_data_FMA.extend3 = extend3_i;
+    assign req_data_FMA.class1 = class1_i;
+    assign req_data_FMA.class2 = class2_i;
+    assign req_data_FMA.class3 = class3_i;
+    assign req_data_FMA.op = req_op_i;
+    assign req_data_FMA.rm = req_rm_i;
+    assign req_data_FMA.tag = req_tag_i;
+
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni) begin
+            req_data_FMA_reg_o <= '0;
+            fma_start_o <= '0;
+        end else if (fma_stall_i) begin
+            fma_start_o <= fma_start_o;
+        end else if (req_valid_i & req_ready_i) begin
+            req_data_FMA_reg_o <= req_data_FMA;
+            fma_start_o <= 1'b1;
+        end else begin
+            fma_start_o <= 1'b0;
+        end
+    end
 
     // DIV
     assign req_data_DIV.extend1 = extend1_i;
@@ -115,7 +146,7 @@ module fpu_exe(
         if (~rst_ni) begin
             req_data_DIV_reg_o <= '0;
             div_start_o <= '0;
-        end else if (req_valid_i & div_ready_i) begin
+        end else if (req_valid_i & req_ready_i) begin
             req_data_DIV_reg_o <= req_data_DIV;
             div_start_o <= 1'b1;
         end else begin
@@ -129,6 +160,7 @@ module fpu_exe(
         misc_reg_empty_o = 1'b1; //默认值
         div_reg_empty_o = 1'b1;
         cvt_reg_empty_o = 1'b1;
+        fma_reg_empty_o = 1'b1;
         if (resp_ready_i) begin
             if (misc_data_vld_i) begin
                 misc_reg_empty_o = 1'b1;
@@ -136,8 +168,8 @@ module fpu_exe(
                 div_reg_empty_o = 1'b1;
             end else if (cvt_data_vld_i) begin
                 cvt_reg_empty_o = 1'b1;
-            end else if (1) begin
-                
+            end else if (fma_data_vld_i) begin
+                fma_reg_empty_o = 1'b1;
             end
         end else if (~resp_ready_i) begin
             if (misc_data_vld_i) begin
@@ -149,8 +181,8 @@ module fpu_exe(
             if (cvt_data_vld_i) begin
                 cvt_reg_empty_o = 1'b0;
             end
-            if (1) begin
-                
+            if (fma_data_vld_i) begin
+                fma_reg_empty_o = 1'b0;    
             end
         end
     end

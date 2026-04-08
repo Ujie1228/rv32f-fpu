@@ -34,9 +34,9 @@ module fpu_cvt #(
     
     // start
     logic start_n;
-    logic start_reg;
-    logic start_capture; // 持续一个时钟周期，用于锁存start_n
     
+    assign start_n = cvt_start_i;
+
     assign fp_cvt_f2i_i.extend = cvt_reg_i.extend;
     assign fp_cvt_f2i_i.op = cvt_reg_i.op;
     assign fp_cvt_f2i_i.rm = cvt_reg_i.rm;
@@ -365,27 +365,6 @@ module fpu_cvt #(
       end
     end
 
-    // start_reg
-    always_ff @(posedge clk_i or negedge rst_ni) begin
-        if (~rst_ni) begin
-            start_capture <= 1'b0;
-        end else if (start_capture) begin
-            start_capture <= 1'b0;
-        end else if (~cvt_stall_i&(start_n | start_reg)) begin
-            start_capture <= 1'b1;
-        end
-    end
-
-    always_ff @(posedge clk_i or negedge rst_ni) begin
-        if (~rst_ni) begin
-            start_reg <= '0;
-        end else if (start_capture) begin
-            start_reg <= start_n;
-        end else begin
-            start_reg <= start_reg;
-        end
-    end
-
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin
             cvt_reg_o <= '0;
@@ -393,7 +372,7 @@ module fpu_cvt #(
         end else if (cvt_stall_i) begin
             cvt_reg_o <= cvt_reg_o;
             cvt_data_vld_o <= cvt_data_vld_o;
-        end else if (start_n | start_reg) begin
+        end else if (start_n) begin
             cvt_reg_o <= cvt_o;
             cvt_data_vld_o <= 1'b1;
         end else begin

@@ -33,7 +33,7 @@ module fpu_rnd (
     expo = rnd_i.expo;
     mant = rnd_i.mant;
     rema = rnd_i.rema;
-    fmt = rnd_i.fmt;
+    fmt = 0;
     rm = rnd_i.rm;
     grs = rnd_i.grs;
     snan = rnd_i.snan;

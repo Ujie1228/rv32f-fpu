@@ -9,11 +9,11 @@ module fpu_div #(
     input logic div_stall_i,
     input logic div_start_i,
 
-    input  fpu_div_in_type  fp_fdiv_i,
-    output fpu_div_out_type fp_fdiv_o,
+    input  fpu_div_in_type  fpu_fdiv_i,
+    output fpu_div_out_type fpu_fdiv_o,
     output fpu_div_reg_out  div_reg_o,
-    input  fpu_mac_out_type fp_mac_o,
-    output fpu_mac_in_type  fp_mac_i,
+    input  fpu_mac_out_type fpu_mac_o,
+    output fpu_mac_in_type  fpu_mac_i,
     input  fpu_rnd_out_type div_rnd_i,
 
     output logic div_ready_o,
@@ -22,15 +22,15 @@ module fpu_div #(
     input logic div_reg_empty_i  // 保证未被取走时vld_o一直为1
 );
 
-  fp_fdiv_reg_functional_type r;
-  fp_fdiv_reg_functional_type rin;
+  fpu_fdiv_reg_functional_type r;
+  fpu_fdiv_reg_functional_type rin;
 
-  fp_fdiv_reg_functional_type v;
+  fpu_fdiv_reg_functional_type v;
 
-  fp_fdiv_reg_fixed_type r_fix;
-  fp_fdiv_reg_fixed_type rin_fix;
+  fpu_fdiv_reg_fixed_type r_fix;
+  fpu_fdiv_reg_fixed_type rin_fix;
 
-  fp_fdiv_reg_fixed_type v_fix;
+  fpu_fdiv_reg_fixed_type v_fix;
 
   localparam logic [7:0] reciprocal_lut[0:127] = '{
       8'b00000000,
@@ -271,10 +271,10 @@ module fpu_div #(
         v = r;
 
         if ((r.state == 0) & div_start_i) begin
-          if (fp_fdiv_i.op.fdiv) begin
+          if (fpu_fdiv_i.op.fdiv) begin
             v.state = 1;
           end
-          if (fp_fdiv_i.op.fsqrt) begin
+          if (fpu_fdiv_i.op.fsqrt) begin
             v.state = 2;
           end
           v.istate = 0;
@@ -302,19 +302,19 @@ module fpu_div #(
         end
 
         if ((r.state == 0) & div_start_i) begin
-          v.a = fp_fdiv_i.data1;
-          v.b = fp_fdiv_i.data2;
-          v.class_a = fp_fdiv_i.class1;
-          v.class_b = fp_fdiv_i.class2;
+          v.a = fpu_fdiv_i.data1;
+          v.b = fpu_fdiv_i.data2;
+          v.class_a = fpu_fdiv_i.class1;
+          v.class_b = fpu_fdiv_i.class2;
           v.fmt = 0;
-          v.rm = fp_fdiv_i.rm;
+          v.rm = fpu_fdiv_i.rm;
           v.snan = 0;
           v.qnan = 0;
           v.dbz = 0;
           v.infs = 0;
           v.zero = 0;
 
-          if (fp_fdiv_i.op.fsqrt) begin
+          if (fpu_fdiv_i.op.fsqrt) begin
             v.b = 33'h07F800000;
             v.class_b = 0;
           end
@@ -339,7 +339,7 @@ module fpu_div #(
             v.zero = 1;
           end
 
-          if (fp_fdiv_i.op.fsqrt) begin
+          if (fpu_fdiv_i.op.fsqrt) begin
             if (v.class_a[7]) begin
               v.infs = 1;
             end
@@ -356,7 +356,7 @@ module fpu_div #(
           v.y = {1'h0, ~|v.b[22:16], reciprocal_lut[$unsigned(v.b[22:16])], 17'h0};
           v.op = 0;
 
-          if (fp_fdiv_i.op.fsqrt) begin
+          if (fpu_fdiv_i.op.fsqrt) begin
             v.qa = {2'h1, v.a[22:0], 2'h0};
             if (!v.a[23]) begin
               v.qa = v.qa >> 1;
@@ -367,165 +367,165 @@ module fpu_div #(
             v.op = 1;
           end
 
-          fp_mac_i.a  = 0;
-          fp_mac_i.b  = 0;
-          fp_mac_i.c  = 0;
-          fp_mac_i.op = 0;
+          fpu_mac_i.a  = 0;
+          fpu_mac_i.b  = 0;
+          fpu_mac_i.c  = 0;
+          fpu_mac_i.op = 0;
         end else if (r.state == 1) begin
           if (r.istate == 0) begin
-            fp_mac_i.a = 27'h2000000;
-            fp_mac_i.b = v.qb;
-            fp_mac_i.c = v.y;
-            fp_mac_i.op = 1;
-            v.e0 = fp_mac_o.d[51:25];
+            fpu_mac_i.a = 27'h2000000;
+            fpu_mac_i.b = v.qb;
+            fpu_mac_i.c = v.y;
+            fpu_mac_i.op = 1;
+            v.e0 = fpu_mac_o.d[51:25];
           end else if (r.istate == 1) begin
-            fp_mac_i.a = v.y;
-            fp_mac_i.b = v.y;
-            fp_mac_i.c = v.e0;
-            fp_mac_i.op = 0;
-            v.y0 = fp_mac_o.d[51:25];
+            fpu_mac_i.a = v.y;
+            fpu_mac_i.b = v.y;
+            fpu_mac_i.c = v.e0;
+            fpu_mac_i.op = 0;
+            v.y0 = fpu_mac_o.d[51:25];
           end else if (r.istate == 2) begin
-            fp_mac_i.a = 27'h0;
-            fp_mac_i.b = v.e0;
-            fp_mac_i.c = v.e0;
-            fp_mac_i.op = 0;
-            v.e1 = fp_mac_o.d[51:25];
+            fpu_mac_i.a = 27'h0;
+            fpu_mac_i.b = v.e0;
+            fpu_mac_i.c = v.e0;
+            fpu_mac_i.op = 0;
+            v.e1 = fpu_mac_o.d[51:25];
           end else if (r.istate == 3) begin
-            fp_mac_i.a = v.y0;
-            fp_mac_i.b = v.y0;
-            fp_mac_i.c = v.e1;
-            fp_mac_i.op = 0;
-            v.y1 = fp_mac_o.d[51:25];
+            fpu_mac_i.a = v.y0;
+            fpu_mac_i.b = v.y0;
+            fpu_mac_i.c = v.e1;
+            fpu_mac_i.op = 0;
+            v.y1 = fpu_mac_o.d[51:25];
           end else if (r.istate == 4) begin
-            fp_mac_i.a = 27'h0;
-            fp_mac_i.b = v.qa;
-            fp_mac_i.c = v.y1;
-            fp_mac_i.op = 0;
-            v.q0 = fp_mac_o.d[51:25];
+            fpu_mac_i.a = 27'h0;
+            fpu_mac_i.b = v.qa;
+            fpu_mac_i.c = v.y1;
+            fpu_mac_i.op = 0;
+            v.q0 = fpu_mac_o.d[51:25];
           end else if (r.istate == 5) begin
-            fp_mac_i.a = v.qa;
-            fp_mac_i.b = v.qb;
-            fp_mac_i.c = v.q0;
-            fp_mac_i.op = 1;
-            v.r0 = fp_mac_o.d;
+            fpu_mac_i.a = v.qa;
+            fpu_mac_i.b = v.qb;
+            fpu_mac_i.c = v.q0;
+            fpu_mac_i.op = 1;
+            v.r0 = fpu_mac_o.d;
           end else if (r.istate == 6) begin
-            fp_mac_i.a = v.q0;
-            fp_mac_i.b = v.r0[51:25];
-            fp_mac_i.c = v.y1;
-            fp_mac_i.op = 0;
-            v.q0 = fp_mac_o.d[51:25];
+            fpu_mac_i.a = v.q0;
+            fpu_mac_i.b = v.r0[51:25];
+            fpu_mac_i.c = v.y1;
+            fpu_mac_i.op = 0;
+            v.q0 = fpu_mac_o.d[51:25];
           end else if (r.istate == 7) begin
-            fp_mac_i.a = v.qa;
-            fp_mac_i.b = v.qb;
-            fp_mac_i.c = v.q0;
-            fp_mac_i.op = 1;
-            v.r1 = fp_mac_o.d;
+            fpu_mac_i.a = v.qa;
+            fpu_mac_i.b = v.qb;
+            fpu_mac_i.c = v.q0;
+            fpu_mac_i.op = 1;
+            v.r1 = fpu_mac_o.d;
             v.q1 = v.q0;
             if ($signed(v.r1[51:25]) > 0) begin
               v.q1 = v.q1 + 1;
             end
           end else if (r.istate == 8) begin
-            fp_mac_i.a = v.qa;
-            fp_mac_i.b = v.qb;
-            fp_mac_i.c = v.q1;
-            fp_mac_i.op = 1;
-            v.r0 = fp_mac_o.d;
+            fpu_mac_i.a = v.qa;
+            fpu_mac_i.b = v.qb;
+            fpu_mac_i.c = v.q1;
+            fpu_mac_i.op = 1;
+            v.r0 = fpu_mac_o.d;
             if (v.r0[51:25] == 0) begin
               v.q0 = v.q1;
               v.r1 = v.r0;
             end
           end else begin
-            fp_mac_i.a  = 0;
-            fp_mac_i.b  = 0;
-            fp_mac_i.c  = 0;
-            fp_mac_i.op = 0;
+            fpu_mac_i.a  = 0;
+            fpu_mac_i.b  = 0;
+            fpu_mac_i.c  = 0;
+            fpu_mac_i.op = 0;
           end
         end else if (r.state == 2) begin
           if (r.istate == 0) begin
-            fp_mac_i.a = 27'h0;
-            fp_mac_i.b = v.qa;
-            fp_mac_i.c = v.y;
-            fp_mac_i.op = 0;
-            v.y0 = fp_mac_o.d[51:25];
+            fpu_mac_i.a = 27'h0;
+            fpu_mac_i.b = v.qa;
+            fpu_mac_i.c = v.y;
+            fpu_mac_i.op = 0;
+            v.y0 = fpu_mac_o.d[51:25];
           end else if (r.istate == 1) begin
-            fp_mac_i.a = 27'h0;
-            fp_mac_i.b = 27'h1000000;
-            fp_mac_i.c = v.y;
-            fp_mac_i.op = 0;
-            v.h0 = fp_mac_o.d[51:25];
+            fpu_mac_i.a = 27'h0;
+            fpu_mac_i.b = 27'h1000000;
+            fpu_mac_i.c = v.y;
+            fpu_mac_i.op = 0;
+            v.h0 = fpu_mac_o.d[51:25];
           end else if (r.istate == 2) begin
-            fp_mac_i.a = 27'h1000000;
-            fp_mac_i.b = v.h0;
-            fp_mac_i.c = v.y0;
-            fp_mac_i.op = 1;
-            v.e0 = fp_mac_o.d[51:25];
+            fpu_mac_i.a = 27'h1000000;
+            fpu_mac_i.b = v.h0;
+            fpu_mac_i.c = v.y0;
+            fpu_mac_i.op = 1;
+            v.e0 = fpu_mac_o.d[51:25];
           end else if (r.istate == 3) begin
-            fp_mac_i.a = v.y0;
-            fp_mac_i.b = v.y0;
-            fp_mac_i.c = v.e0;
-            fp_mac_i.op = 0;
-            v.y1 = fp_mac_o.d[51:25];
+            fpu_mac_i.a = v.y0;
+            fpu_mac_i.b = v.y0;
+            fpu_mac_i.c = v.e0;
+            fpu_mac_i.op = 0;
+            v.y1 = fpu_mac_o.d[51:25];
           end else if (r.istate == 4) begin
-            fp_mac_i.a = v.h0;
-            fp_mac_i.b = v.h0;
-            fp_mac_i.c = v.e0;
-            fp_mac_i.op = 0;
-            v.h1 = fp_mac_o.d[51:25];
+            fpu_mac_i.a = v.h0;
+            fpu_mac_i.b = v.h0;
+            fpu_mac_i.c = v.e0;
+            fpu_mac_i.op = 0;
+            v.h1 = fpu_mac_o.d[51:25];
           end else if (r.istate == 5) begin
-            fp_mac_i.a = v.qa;
-            fp_mac_i.b = v.y1;
-            fp_mac_i.c = v.y1;
-            fp_mac_i.op = 1;
-            v.r0 = fp_mac_o.d;
+            fpu_mac_i.a = v.qa;
+            fpu_mac_i.b = v.y1;
+            fpu_mac_i.c = v.y1;
+            fpu_mac_i.op = 1;
+            v.r0 = fpu_mac_o.d;
           end else if (r.istate == 6) begin
-            fp_mac_i.a = v.y1;
-            fp_mac_i.b = v.h1;
-            fp_mac_i.c = v.r0[51:25];
-            fp_mac_i.op = 0;
-            v.y2 = fp_mac_o.d[51:25];
+            fpu_mac_i.a = v.y1;
+            fpu_mac_i.b = v.h1;
+            fpu_mac_i.c = v.r0[51:25];
+            fpu_mac_i.op = 0;
+            v.y2 = fpu_mac_o.d[51:25];
           end else if (r.istate == 7) begin
-            fp_mac_i.a = v.qa;
-            fp_mac_i.b = v.y2;
-            fp_mac_i.c = v.y2;
-            fp_mac_i.op = 1;
-            v.r0 = fp_mac_o.d;
+            fpu_mac_i.a = v.qa;
+            fpu_mac_i.b = v.y2;
+            fpu_mac_i.c = v.y2;
+            fpu_mac_i.op = 1;
+            v.r0 = fpu_mac_o.d;
           end else if (r.istate == 8) begin
-            fp_mac_i.a = v.y2;
-            fp_mac_i.b = v.h1;
-            fp_mac_i.c = v.r0[51:25];
-            fp_mac_i.op = 0;
-            v.q0 = fp_mac_o.d[51:25];
+            fpu_mac_i.a = v.y2;
+            fpu_mac_i.b = v.h1;
+            fpu_mac_i.c = v.r0[51:25];
+            fpu_mac_i.op = 0;
+            v.q0 = fpu_mac_o.d[51:25];
           end else if (r.istate == 9) begin
-            fp_mac_i.a = v.qa;
-            fp_mac_i.b = v.q0;
-            fp_mac_i.c = v.q0;
-            fp_mac_i.op = 1;
-            v.r1 = fp_mac_o.d;
+            fpu_mac_i.a = v.qa;
+            fpu_mac_i.b = v.q0;
+            fpu_mac_i.c = v.q0;
+            fpu_mac_i.op = 1;
+            v.r1 = fpu_mac_o.d;
             v.q1 = v.q0;
             if ($signed(v.r1[51:25]) > 0) begin
               v.q1 = v.q1 + 1;
             end
           end else if (r.istate == 10) begin
-            fp_mac_i.a = v.qa;
-            fp_mac_i.b = v.q1;
-            fp_mac_i.c = v.q1;
-            fp_mac_i.op = 1;
-            v.r0 = fp_mac_o.d;
+            fpu_mac_i.a = v.qa;
+            fpu_mac_i.b = v.q1;
+            fpu_mac_i.c = v.q1;
+            fpu_mac_i.op = 1;
+            v.r0 = fpu_mac_o.d;
             if (v.r0[51:25] == 0) begin
               v.q0 = v.q1;
               v.r1 = v.r0;
             end
           end else begin
-            fp_mac_i.a  = 0;
-            fp_mac_i.b  = 0;
-            fp_mac_i.c  = 0;
-            fp_mac_i.op = 0;
+            fpu_mac_i.a  = 0;
+            fpu_mac_i.b  = 0;
+            fpu_mac_i.c  = 0;
+            fpu_mac_i.op = 0;
           end
         end else if (r.state == 3) begin
-          fp_mac_i.a = 0;
-          fp_mac_i.b = 0;
-          fp_mac_i.c = 0;
-          fp_mac_i.op = 0;
+          fpu_mac_i.a = 0;
+          fpu_mac_i.b = 0;
+          fpu_mac_i.c = 0;
+          fpu_mac_i.op = 0;
 
           v.mantissa_fdiv = {v.q0[25:0], 30'h0};
 
@@ -569,35 +569,35 @@ module fpu_div #(
           v.grs = {v.mantissa_fdiv[31:30], |v.mantissa_fdiv[29:0]};
 
         end else begin
-          fp_mac_i.a  = 0;
-          fp_mac_i.b  = 0;
-          fp_mac_i.c  = 0;
-          fp_mac_i.op = 0;
+          fpu_mac_i.a  = 0;
+          fpu_mac_i.b  = 0;
+          fpu_mac_i.c  = 0;
+          fpu_mac_i.op = 0;
 
         end
 
-        fp_fdiv_o.fp_rnd.sig = v.sign_rnd;
-        fp_fdiv_o.fp_rnd.expo = v.exponent_rnd;
-        fp_fdiv_o.fp_rnd.mant = v.mantissa_rnd;
-        fp_fdiv_o.fp_rnd.rema = v.remainder_rnd;
-        fp_fdiv_o.fp_rnd.fmt = v.fmt;
-        fp_fdiv_o.fp_rnd.rm = v.rm;
-        fp_fdiv_o.fp_rnd.grs = v.grs;
-        fp_fdiv_o.fp_rnd.snan = v.snan;
-        fp_fdiv_o.fp_rnd.qnan = v.qnan;
-        fp_fdiv_o.fp_rnd.dbz = v.dbz;
-        fp_fdiv_o.fp_rnd.infs = v.infs;
-        fp_fdiv_o.fp_rnd.zero = v.zero;
-        fp_fdiv_o.fp_rnd.diff = 1'h0;
-        fp_fdiv_o.ready = v.ready;
+        fpu_fdiv_o.fp_rnd.sig = v.sign_rnd;
+        fpu_fdiv_o.fp_rnd.expo = v.exponent_rnd;
+        fpu_fdiv_o.fp_rnd.mant = v.mantissa_rnd;
+        fpu_fdiv_o.fp_rnd.rema = v.remainder_rnd;
+        fpu_fdiv_o.fp_rnd.fmt = v.fmt;
+        fpu_fdiv_o.fp_rnd.rm = v.rm;
+        fpu_fdiv_o.fp_rnd.grs = v.grs;
+        fpu_fdiv_o.fp_rnd.snan = v.snan;
+        fpu_fdiv_o.fp_rnd.qnan = v.qnan;
+        fpu_fdiv_o.fp_rnd.dbz = v.dbz;
+        fpu_fdiv_o.fp_rnd.infs = v.infs;
+        fpu_fdiv_o.fp_rnd.zero = v.zero;
+        fpu_fdiv_o.fp_rnd.diff = 1'h0;
+        fpu_fdiv_o.ready = v.ready;
 
         rin = v;
 
       end
 
-      always_ff @(posedge clk_i) begin
-        if (rst_ni == 0) begin
-          r <= init_fp_fdiv_reg_functional;
+      always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni) begin
+          r <= init_fpu_fdiv_reg_functional;
         end else begin
           r <= rin;
         end
@@ -607,21 +607,21 @@ module fpu_div #(
 
     if (PERFORMANCE == 0) begin
 
-      assign fp_mac_i.a  = 0;
-      assign fp_mac_i.b  = 0;
-      assign fp_mac_i.c  = 0;
-      assign fp_mac_i.op = 0;
+      assign fpu_mac_i.a  = 0;
+      assign fpu_mac_i.b  = 0;
+      assign fpu_mac_i.c  = 0;
+      assign fpu_mac_i.op = 0;
 
       always_comb begin
 
         v_fix = r_fix;
 
         if ((r_fix.state == 0) & div_start_i) begin
-          if (fp_fdiv_i.op.fdiv) begin
+          if (fpu_fdiv_i.op.fdiv) begin
             v_fix.state  = 1;
             v_fix.istate = 25;
           end
-          if (fp_fdiv_i.op.fsqrt) begin
+          if (fpu_fdiv_i.op.fsqrt) begin
             v_fix.state  = 1;
             v_fix.istate = 24;
           end
@@ -645,19 +645,19 @@ module fpu_div #(
 
         if ((r_fix.state == 0) & div_start_i) begin
 
-          v_fix.a = fp_fdiv_i.data1;
-          v_fix.b = fp_fdiv_i.data2;
-          v_fix.class_a = fp_fdiv_i.class1;
-          v_fix.class_b = fp_fdiv_i.class2;
+          v_fix.a = fpu_fdiv_i.data1;
+          v_fix.b = fpu_fdiv_i.data2;
+          v_fix.class_a = fpu_fdiv_i.class1;
+          v_fix.class_b = fpu_fdiv_i.class2;
           v_fix.fmt = 0;
-          v_fix.rm = fp_fdiv_i.rm;
+          v_fix.rm = fpu_fdiv_i.rm;
           v_fix.snan = 0;
           v_fix.qnan = 0;
           v_fix.dbz = 0;
           v_fix.infs = 0;
           v_fix.zero = 0;
 
-          if (fp_fdiv_i.op.fsqrt) begin
+          if (fpu_fdiv_i.op.fsqrt) begin
             v_fix.b = 33'h07F800000;
             v_fix.class_b = 0;
           end
@@ -682,7 +682,7 @@ module fpu_div #(
             v_fix.zero = 1;
           end
 
-          if (fp_fdiv_i.op.fsqrt) begin
+          if (fpu_fdiv_i.op.fsqrt) begin
             if (v_fix.class_a[7]) begin
               v_fix.infs = 1;
             end
@@ -694,7 +694,7 @@ module fpu_div #(
           v_fix.sign_fdiv = v_fix.a[32] ^ v_fix.b[32];
 
           v_fix.exponent_fdiv = {2'h0, v_fix.a[31:23]} - {2'h0, v_fix.b[31:23]};
-          if (fp_fdiv_i.op.fsqrt) begin
+          if (fpu_fdiv_i.op.fsqrt) begin
             v_fix.exponent_fdiv = ($signed({2'h0, v_fix.a[31:23]}) + $signed(-11'd253)) >>> 1;
           end
 
@@ -703,7 +703,7 @@ module fpu_div #(
           v_fix.m  = {4'h1, v_fix.b[22:0], 1'h0};
           v_fix.r  = {5'h1, v_fix.a[22:0]};
           v_fix.op = 0;
-          if (fp_fdiv_i.op.fsqrt) begin
+          if (fpu_fdiv_i.op.fsqrt) begin
             v_fix.m = 0;
             if (v_fix.a[23] == 0) begin
               v_fix.r = {v_fix.r[26:0], 1'h0};
@@ -757,28 +757,28 @@ module fpu_div #(
 
         end
 
-        fp_fdiv_o.fp_rnd.sig = v_fix.sign_rnd;
-        fp_fdiv_o.fp_rnd.expo = v_fix.exponent_rnd;
-        fp_fdiv_o.fp_rnd.mant = v_fix.mantissa_rnd;
-        fp_fdiv_o.fp_rnd.rema = 2'h0;
-        fp_fdiv_o.fp_rnd.fmt = v_fix.fmt;
-        fp_fdiv_o.fp_rnd.rm = v_fix.rm;
-        fp_fdiv_o.fp_rnd.grs = v_fix.grs;
-        fp_fdiv_o.fp_rnd.snan = v_fix.snan;
-        fp_fdiv_o.fp_rnd.qnan = v_fix.qnan;
-        fp_fdiv_o.fp_rnd.dbz = v_fix.dbz;
-        fp_fdiv_o.fp_rnd.infs = v_fix.infs;
-        fp_fdiv_o.fp_rnd.zero = v_fix.zero;
-        fp_fdiv_o.fp_rnd.diff = 1'h0;
-        fp_fdiv_o.ready = v_fix.ready;
+        fpu_fdiv_o.fpu_rnd.sig = v_fix.sign_rnd;
+        fpu_fdiv_o.fpu_rnd.expo = v_fix.exponent_rnd;
+        fpu_fdiv_o.fpu_rnd.mant = v_fix.mantissa_rnd;
+        fpu_fdiv_o.fpu_rnd.rema = 2'h0;
+        fpu_fdiv_o.fpu_rnd.fmt = v_fix.fmt;
+        fpu_fdiv_o.fpu_rnd.rm = v_fix.rm;
+        fpu_fdiv_o.fpu_rnd.grs = v_fix.grs;
+        fpu_fdiv_o.fpu_rnd.snan = v_fix.snan;
+        fpu_fdiv_o.fpu_rnd.qnan = v_fix.qnan;
+        fpu_fdiv_o.fpu_rnd.dbz = v_fix.dbz;
+        fpu_fdiv_o.fpu_rnd.infs = v_fix.infs;
+        fpu_fdiv_o.fpu_rnd.zero = v_fix.zero;
+        fpu_fdiv_o.fpu_rnd.diff = 1'h0;
+        fpu_fdiv_o.ready = v_fix.ready;
 
         rin_fix = v_fix;
 
       end
 
-      always_ff @(posedge clk_i) begin
-        if (rst_ni == 0) begin
-          r_fix <= init_fp_fdiv_reg_fixed;
+      always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni) begin
+          r_fix <= init_fpu_fdiv_reg_fixed;
         end else begin
           r_fix <= rin_fix;
         end
@@ -797,10 +797,10 @@ module fpu_div #(
       end else if (~div_reg_empty_i) begin   // vld与reg保持
           div_data_vld_o <= div_data_vld_o;
           div_reg_o <= div_reg_o;
-      end else if (fp_fdiv_o.ready) begin
+      end else if (fpu_fdiv_o.ready) begin
           div_reg_o.result <= div_rnd_i.result;
           div_reg_o.flags <= div_rnd_i.flags;
-          div_reg_o.tag <= fp_fdiv_i.tag;
+          div_reg_o.tag <= fpu_fdiv_i.tag;
           div_data_vld_o <= 1'b1;
       end else begin
           div_data_vld_o <= 1'b0;

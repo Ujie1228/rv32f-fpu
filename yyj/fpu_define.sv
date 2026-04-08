@@ -237,16 +237,160 @@ package fpu_define;
       logic [9:0]  class3;
       fpu_operation_type op;
       logic [2:0]  rm;
-      logic        req_valid;
-      logic [4:0]  req_tag;
+      logic [4:0]  tag;
     } fpu_fma_in_type;
+
+    typedef struct packed {
+      fpu_rnd_in_type fpu_rnd;
+      logic ready;
+      logic [4:0]  tag;
+    } fpu_fma_out_type;
 
     typedef struct packed {
       logic [31:0] result;
       logic [4:0]  flags;
-      logic        req_valid;
-      logic [4:0]  req_tag;
-    } fpu_fma_out_type;
+      logic [4:0]  tag;
+    } fpu_fma_reg_out;
+
+    typedef struct packed {
+      logic [1:0] fmt;
+      logic [2:0] rm;
+      logic snan;
+      logic qnan;
+      logic dbz;
+      logic infs;
+      logic zero;
+      logic sign_mul;
+      logic [10:0] exponent_mul;
+      logic [76:0] mantissa_mul;
+      logic sign_add;
+      logic [10:0] exponent_add;
+      logic [76:0] mantissa_add;
+      logic exponent_neg;
+      logic ready;
+      logic [4:0]  tag;
+    } fpu_fma_reg_type_1;
+
+    parameter fpu_fma_reg_type_1 init_fpu_fma_reg_1 = '{
+        fmt : 0,
+        rm : 0,
+        snan : 0,
+        qnan : 0,
+        dbz : 0,
+        infs : 0,
+        zero : 0,
+        sign_mul : 0,
+        exponent_mul : 0,
+        mantissa_mul : 0,
+        sign_add : 0,
+        exponent_add : 0,
+        mantissa_add : 0,
+        exponent_neg : 0,
+        ready : 0,
+        tag: 0
+    };
+
+    typedef struct packed {
+      logic [32:0] a;
+      logic [32:0] b;
+      logic [32:0] c;
+      logic [9:0] class_a;
+      logic [9:0] class_b;
+      logic [9:0] class_c;
+      logic [1:0] fmt;
+      logic [2:0] rm;
+      logic snan;
+      logic qnan;
+      logic dbz;
+      logic infs;
+      logic zero;
+      logic sign_a;
+      logic [8:0] exponent_a;
+      logic [23:0] mantissa_a;
+      logic sign_b;
+      logic [8:0] exponent_b;
+      logic [23:0] mantissa_b;
+      logic sign_c;
+      logic [8:0] exponent_c;
+      logic [23:0] mantissa_c;
+      logic sign_mul;
+      logic [10:0] exponent_mul;
+      logic [76:0] mantissa_mul;
+      logic sign_add;
+      logic [10:0] exponent_add;
+      logic [76:0] mantissa_add;
+      logic [76:0] mantissa_l;
+      logic [76:0] mantissa_r;
+      logic [10:0] exponent_dif;
+      logic [5:0] counter_dif;
+      logic exponent_neg;
+      logic ready;
+      logic [4:0]  tag;
+    } fpu_fma_var_type_1;
+
+    typedef struct packed {
+      logic sign_rnd;
+      logic [10:0] exponent_rnd;
+      logic [24:0] mantissa_rnd;
+      logic [1:0] fmt;
+      logic [2:0] rm;
+      logic [2:0] grs;
+      logic snan;
+      logic qnan;
+      logic dbz;
+      logic infs;
+      logic zero;
+      logic diff;
+      logic ready;
+      logic [4:0]  tag;
+    } fpu_fma_reg_type_2;
+
+    parameter fpu_fma_reg_type_2 init_fpu_fma_reg_2 = '{
+        sign_rnd : 0,
+        exponent_rnd : 0,
+        mantissa_rnd : 0,
+        fmt : 0,
+        rm : 0,
+        grs : 0,
+        snan : 0,
+        qnan : 0,
+        dbz : 0,
+        infs : 0,
+        zero : 0,
+        diff : 0,
+        ready : 0,
+        tag: 0
+    };
+
+    typedef struct packed {
+      logic [1:0] fmt;
+      logic [2:0] rm;
+      logic snan;
+      logic qnan;
+      logic dbz;
+      logic infs;
+      logic zero;
+      logic diff;
+      logic sign_mul;
+      logic [10:0] exponent_mul;
+      logic [76:0] mantissa_mul;
+      logic sign_add;
+      logic [10:0] exponent_add;
+      logic [76:0] mantissa_add;
+      logic exponent_neg;
+      logic sign_mac;
+      logic [10:0] exponent_mac;
+      logic [76:0] mantissa_mac;
+      logic [6:0] counter_mac;
+      logic [10:0] counter_sub;
+      logic [7:0] bias;
+      logic sign_rnd;
+      logic [10:0] exponent_rnd;
+      logic [24:0] mantissa_rnd;
+      logic [2:0] grs;
+      logic ready;
+      logic [4:0]  tag;
+    } fpu_fma_var_type_2;
 
     //*******mac**********
     typedef struct packed {
@@ -272,7 +416,7 @@ package fpu_define;
     } fpu_div_in_type;
 
     typedef struct packed {
-      fp_rnd_in_type fp_rnd;
+      fpu_rnd_in_type fpu_rnd;
       logic ready;
     } fpu_div_out_type;
 
@@ -327,9 +471,9 @@ package fpu_define;
       logic [31:0] result;
       logic [4:0] flags;
       logic ready;
-    } fp_fdiv_reg_functional_type;
+    } fpu_fdiv_reg_functional_type;
 
-    parameter fp_fdiv_reg_functional_type init_fp_fdiv_reg_functional = '{
+    parameter fpu_fdiv_reg_functional_type init_fpu_fdiv_reg_functional = '{
       state : 0,
       istate : 0,
       fmt : 0,
@@ -412,9 +556,9 @@ package fpu_define;
       logic [31:0] result;
       logic [4:0] flags;
       logic ready;
-    } fp_fdiv_reg_fixed_type;
+    } fpu_fdiv_reg_fixed_type;
 
-    parameter fp_fdiv_reg_fixed_type init_fp_fdiv_reg_fixed = '{
+    parameter fpu_fdiv_reg_fixed_type init_fpu_fdiv_reg_fixed = '{
       state : 0,
       istate : 0,
       fmt : 0,
