@@ -78,22 +78,22 @@ module fpu_misc(
     // misc_o
     always_comb begin
         misc_o = '0;
-        if (misc_i.op.fsgnj) begin
+        if (misc_reg_i.op.fsgnj) begin
             misc_o.result = sgnj_o.result;
             misc_o.flags = '0;
-            misc_o.tag = misc_i.tag;
-        end else if (misc_i.op.fcmp) begin
+            misc_o.tag = misc_reg_i.tag;
+        end else if (misc_reg_i.op.fcmp) begin
             misc_o.result = cmp_o.result;
             misc_o.flags = cmp_o.flags;
-            misc_o.tag = misc_i.tag;
-        end else if (misc_i.op.fmax) begin
+            misc_o.tag = misc_reg_i.tag;
+        end else if (misc_reg_i.op.fmax) begin
             misc_o.result = max_o.result;
             misc_o.flags = max_o.flags;
-            misc_o.tag = misc_i.tag;
-        end else if (misc_i.op.fclass) begin
+            misc_o.tag = misc_reg_i.tag;
+        end else if (misc_reg_i.op.fclass) begin
             misc_o.result = class_o.result;
             misc_o.flags = '0;
-            misc_o.tag = misc_i.tag;
+            misc_o.tag = misc_reg_i.tag;
         end
     end
 
