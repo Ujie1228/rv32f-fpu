@@ -8,18 +8,121 @@ module fpu_top (
     output  fpu_top_out_type top_o
 );
 
-    //lzc
-    lzc_32_in_type  lzc1_32_i;
-    lzc_32_out_type lzc1_32_o;
-    lzc_32_in_type  lzc2_32_i;
-    lzc_32_out_type lzc2_32_o;
-    lzc_32_in_type  lzc3_32_i;
-    lzc_32_out_type lzc3_32_o;
-    lzc_32_in_type  lzc4_32_i;
-    lzc_32_out_type lzc4_32_o;
-    lzc_128_in_type lzc_128_i;
+    // lzc模块信号
+    lzc_32_in_type   lzc1_32_i;
+    lzc_32_out_type  lzc1_32_o;
+    lzc_32_in_type   lzc2_32_i;
+    lzc_32_out_type  lzc2_32_o;
+    lzc_32_in_type   lzc3_32_i;
+    lzc_32_out_type  lzc3_32_o;
+    lzc_32_in_type   lzc4_32_i;
+    lzc_32_out_type  lzc4_32_o;
+    lzc_128_in_type  lzc_128_i;
     lzc_128_out_type lzc_128_o;
 
+    // extend模块信号
+    logic [32:0] extend1;
+    logic [32:0] extend2;
+    logic [32:0] extend3;
+
+    logic [9:0] class1;
+    logic [9:0] class2;
+    logic [9:0] class3;
+
+    // op_class信号
+    logic [3:0] op_class;
+    fpu_operation_type op;
+    
+    // control模块信号
+    logic       misc_ready_i;
+    logic       cvt_ready_i;
+    logic       fma_ready_i;
+    logic       div_ready_i;
+    logic       req_ready_o;
+
+    logic       misc_data_vld_i;
+    logic       cvt_data_vld_i;
+    logic       fma_data_vld_i;
+    logic       div_data_vld_i;
+    logic       resp_valid_o;
+
+    logic       misc_reg_empty_i;
+    logic       cvt_reg_empty_i;
+    logic       fma_reg_empty_i;
+    logic       div_reg_empty_i;
+
+    logic       misc_stall_o;
+    logic       cvt_stall_o;
+    logic       fma_stall_o;
+    logic       div_stall_o;
+
+    logic       div_busy;
+    
+    // exe模块信号
+    logic       misc_start_o;
+    logic       div_start_o;
+    logic       cvt_start_o;
+    logic       fma_start_o;
+    
+    fpu_fma_in_type       req_data_FMA_reg_o;
+    fpu_div_in_type       req_data_DIV_reg_o;
+    fpu_cvt_in_type       req_data_CVT_reg_o;
+    fpu_misc_in_type      req_data_MISC_reg_o;
+
+    fpu_misc_out_type     resp_misc_reg_i;
+    fpu_div_reg_out       resp_div_reg_i;
+    fpu_cvt_out_type      resp_cvt_reg_i;
+    fpu_fma_reg_out       resp_fma_reg_i;
+    
+    // div模块信号
+    fpu_div_out_type      div_nrnd;
+    fpu_mac_in_type       mac_i;
+    fpu_mac_out_type      mac_o;
+    fpu_rnd_out_type      div_rnd_o;
+
+    // cvt模块信号
+    fpu_rnd_in_type       cvt_rnd_i;
+    fpu_rnd_out_type      cvt_rnd_o;
+
+    // fma模块信号
+    fpu_fma_out_type      fma_nrnd;
+    fpu_rnd_out_type      fma_rnd_o;
+
+    // op
+    assign op = top_i.req_op_i;
+
+    // top_o
+    assign top_o.req_ready_o = req_ready_o;
+    assign top_o.resp_valid_o = resp_valid_o;
+
+
+    // op_class控制
+    always_comb begin
+        op_class = MISC;
+        if (op.fmadd | op.fmsub | op.fnmadd | op.fnmsub | op.fadd | op.fsub | op.fmul) begin
+        op_class = FMA;
+        end else if (op.fdiv | op.fsqrt) begin
+        op_class = DIV;
+        end else if (op.fcvt_i2f | op.fcvt_f2i) begin
+        op_class = CVT;
+        end else if (op.fsgnj | op.fcmp | op.fmax | op.fclass) begin
+        op_class = MISC;
+        end
+    end
+
+    // div_busy控制
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (~rst_ni) begin
+            div_busy <= 0;
+        end else if (top_i.req_valid_i & div_ready_i & (op_class ==DIV)) begin
+            div_busy <= 1;
+        end else if (div_nrnd.ready) begin
+            div_busy <= 0;
+        end
+    end
+
+
+    //lzc
     lzc_32 u1_lzc_32 (
         .data  (lzc1_32_i.data),
         .cnt   (lzc1_32_o.cnt),
@@ -50,15 +153,8 @@ module fpu_top (
         .valid (lzc_128_o.valid)
     );
 
+
     // extend
-    logic [32:0] extend1;
-    logic [32:0] extend2;
-    logic [32:0] extend3;
-
-    logic [9:0] class1;
-    logic [9:0] class2;
-    logic [9:0] class3;
-
     fpu_ext u1_fpu_ext (
         .data_i   (top_i.req_data1_i),
         .extend_o (extend1),
@@ -81,54 +177,10 @@ module fpu_top (
         .class_o  (class3),
         .lzc_o    (lzc3_32_o),
         .lzc_i    (lzc3_32_i)
-    );  
-
-    // op_class
-    logic [3:0] op_class;
-    fpu_operation_type op;
-
-    assign op = top_i.req_op_i;
-
-    always_comb begin
-        op_class = MISC;
-        if (op.fmadd | op.fmsub | op.fnmadd | op.fnmsub | op.fadd | op.fsub | op.fmul) begin
-        op_class = FMA;
-        end else if (op.fdiv | op.fsqrt) begin
-        op_class = DIV;
-        end else if (op.fcvt_i2f | op.fcvt_f2i) begin
-        op_class = CVT;
-        end else if (op.fsgnj | op.fcmp | op.fmax | op.fclass) begin
-        op_class = MISC;
-        end
-    end
+    );
 
 
-
-    // outports wire
-    wire        misc_ready_i;
-    wire        cvt_ready_i;
-    wire        fma_ready_i;
-    wire        div_ready_i;
-    wire       	req_ready_o;
-
-    wire       	misc_data_vld_i;
-    wire       	cvt_data_vld_i;
-    wire       	fma_data_vld_i;
-    wire       	div_data_vld_i;
-    wire       	resp_valid_o;
-
-    wire       	misc_reg_empty_i;
-    wire       	cvt_reg_empty_i;
-    wire       	fma_reg_empty_i;
-    wire       	div_reg_empty_i;
-
-    wire       	misc_stall_o;
-    wire       	cvt_stall_o;
-    wire       	fma_stall_o;
-    wire       	div_stall_o;
-
-    logic       div_busy;
-
+    // control
     fpu_control u_fpu_control(
         .clk_i            	( clk_i             ),
         .rst_ni           	( rst_ni            ),
@@ -154,21 +206,8 @@ module fpu_top (
         .div_stall_o      	( div_stall_o       )
     );
 
-    wire  fpu_fma_in_type       req_data_FMA_reg_o;
-    wire  fpu_div_in_type       req_data_DIV_reg_o;
-    wire  fpu_cvt_in_type       req_data_CVT_reg_o;
-    wire  fpu_misc_in_type      req_data_MISC_reg_o;
 
-    wire        misc_start_o;
-    wire        div_start_o;
-    wire        cvt_start_o;
-    wire        fma_start_o;
-
-    wire  fpu_misc_out_type     resp_misc_reg_i;
-    wire  fpu_div_reg_out       resp_div_reg_i;
-    wire  fpu_cvt_out_type      resp_cvt_reg_i;
-    wire  fpu_fma_reg_out       resp_fma_reg_i;
-
+    // exe
     fpu_exe u_fpu_exe(
         .clk_i               	( clk_i                ),
         .rst_ni              	( rst_ni               ),
@@ -231,11 +270,8 @@ module fpu_top (
         .resp_tag_o             ( top_o.resp_tag_o     )
     );
 
-    //top_o
-    assign top_o.req_ready_o = req_ready_o;
-    assign top_o.resp_valid_o = resp_valid_o;
 
-    //misc
+    // misc
     fpu_misc u_fpu_misc(
         .clk_i           	( clk_i               ),
         .rst_ni          	( rst_ni              ),
@@ -248,12 +284,7 @@ module fpu_top (
     );
 
 
-    //div
-    wire  fpu_div_out_type      div_nrnd;
-    wire  fpu_mac_in_type       mac_i;
-    wire  fpu_mac_out_type      mac_o;
-    wire  fpu_rnd_out_type      div_rnd_o;
-
+    // div
     fpu_div u_fpu_div(
         .clk_i           	( clk_i              ),
         .rst_ni          	( rst_ni             ),
@@ -280,22 +311,8 @@ module fpu_top (
         .rnd_o              (div_rnd_o        )
     );
 
-    //div_busy控制
-    
-    always_ff @(posedge clk_i or negedge rst_ni) begin
-        if (~rst_ni) begin
-            div_busy <= 0;
-        end else if (top_i.req_valid_i & div_ready_i & (op_class ==DIV)) begin
-            div_busy <= 1;
-        end else if (div_nrnd.ready) begin
-            div_busy <= 0;
-        end
-    end
 
-    //cvt
-    wire  fpu_rnd_in_type       cvt_rnd_i;
-    wire  fpu_rnd_out_type      cvt_rnd_o;
-
+    // cvt
     fpu_cvt u_fpu_cvt(
         .clk_i              ( clk_i              ),
         .rst_ni             ( rst_ni             ),
@@ -316,10 +333,8 @@ module fpu_top (
         .rnd_o              (cvt_rnd_o)
     );
 
-    //fma
-    wire  fpu_fma_out_type      fma_nrnd;
-    wire  fpu_rnd_out_type      fma_rnd_o;
 
+    // fma
     fpu_fma u_fpu_fma(
         .clk_i              ( clk_i              ),
         .rst_ni             ( rst_ni             ),

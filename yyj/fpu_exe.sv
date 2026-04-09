@@ -199,7 +199,9 @@ module fpu_exe(
     // 优先级
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (~rst_ni) begin
-            result_o <= 0;
+            resp_result_o <= '0;
+            resp_flags_o <= '0;
+            resp_tag_o <= '0;
         end else if (misc_data_vld_i & resp_ready_i) begin
             resp_result_o <= resp_misc_reg_i.result;
             resp_flags_o <= resp_misc_reg_i.flags;
