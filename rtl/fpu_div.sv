@@ -302,8 +302,8 @@ module fpu_div #(
         end
 
         if ((r.state == 0) & div_start_i) begin
-          v.a = fpu_fdiv_i.data1;
-          v.b = fpu_fdiv_i.data2;
+          v.a = fpu_fdiv_i.extend1;
+          v.b = fpu_fdiv_i.extend2;
           v.class_a = fpu_fdiv_i.class1;
           v.class_b = fpu_fdiv_i.class2;
           v.fmt = 0;
@@ -645,8 +645,8 @@ module fpu_div #(
 
         if ((r_fix.state == 0) & div_start_i) begin
 
-          v_fix.a = fpu_fdiv_i.data1;
-          v_fix.b = fpu_fdiv_i.data2;
+          v_fix.a = fpu_fdiv_i.extend1;
+          v_fix.b = fpu_fdiv_i.extend2;
           v_fix.class_a = fpu_fdiv_i.class1;
           v_fix.class_b = fpu_fdiv_i.class2;
           v_fix.fmt = 0;

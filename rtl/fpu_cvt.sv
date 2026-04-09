@@ -10,12 +10,12 @@ module fpu_cvt #(
     input logic cvt_stall_i,
     input logic cvt_start_i,
     
-    input  fpu_cvt_in_type  cvt_reg_i,
-    output fpu_cvt_out_type cvt_reg_o,
-    input  lzc_32_out_type  lzc_i,
-    output lzc_32_in_type   lzc_o,
-    input  fpu_rnd_out_type cvt_rnd_i,
-    output fpu_rnd_in_type  cvt_rnd_o,
+    input   fpu_cvt_in_type  cvt_reg_i,
+    output  fpu_cvt_out_type cvt_reg_o,
+    input   lzc_32_out_type  lzc_i,
+    output  lzc_32_in_type   lzc_o,
+    input   fpu_rnd_out_type cvt_rnd_i,
+    output  fpu_rnd_in_type  cvt_rnd_o,
 
     output logic cvt_ready_o,
     output logic cvt_data_vld_o
@@ -55,7 +55,7 @@ module fpu_cvt #(
 
         always_comb begin
 
-          v_f2i.data = fp_cvt_f2i_i.data;
+          v_f2i.extend = fp_cvt_f2i_i.extend;
           v_f2i.op = fp_cvt_f2i_i.op.fcvt_op;
           v_f2i.rm = fp_cvt_f2i_i.rm;
           v_f2i.classification = fp_cvt_f2i_i.classification;
@@ -74,9 +74,9 @@ module fpu_cvt #(
               v_f2i.exponent_bias = 35;
           end
 
-          v_f2i.sign_cvt = v_f2i.data[32];
-          v_f2i.exponent_cvt = v_f2i.data[31:23] - 10'd252;
-          v_f2i.mantissa_cvt = {36'h1, v_f2i.data[22:0]};
+          v_f2i.sign_cvt = v_f2i.extend[32];
+          v_f2i.exponent_cvt = v_f2i.extend[31:23] - 10'd252;
+          v_f2i.mantissa_cvt = {36'h1, v_f2i.extend[22:0]};
 
           if ((v_f2i.classification[3] | v_f2i.classification[4]) == 1) begin
             v_f2i.mantissa_cvt[23] = 0;
@@ -169,7 +169,7 @@ module fpu_cvt #(
 
         always_comb begin
 
-          v_f2i.data = fp_cvt_f2i_i.data;
+          v_f2i.extend = fp_cvt_f2i_i.extend;
           v_f2i.op = fp_cvt_f2i_i.op.fcvt_op;
           v_f2i.rm = fp_cvt_f2i_i.rm;
           v_f2i.classification = fp_cvt_f2i_i.classification;
@@ -188,9 +188,9 @@ module fpu_cvt #(
             v_f2i.exponent_bias = 35;
           end
 
-          v_f2i.sign_cvt = v_f2i.data[32];
-          v_f2i.exponent_cvt = v_f2i.data[31:23] - 10'd252;
-          v_f2i.mantissa_cvt = {36'h1, v_f2i.data[22:0]};
+          v_f2i.sign_cvt = v_f2i.extend[32];
+          v_f2i.exponent_cvt = v_f2i.extend[31:23] - 10'd252;
+          v_f2i.mantissa_cvt = {36'h1, v_f2i.extend[22:0]};
 
           if ((v_f2i.classification[3] | v_f2i.classification[4]) == 1) begin
             v_f2i.mantissa_cvt[23] = 0;
@@ -323,8 +323,8 @@ module fpu_cvt #(
 
       v_i2f.zero = ~|v_i2f.mantissa_uint;
 
-      lzc_i.a = v_i2f.mantissa_uint;
-      v_i2f.counter_uint = ~lzc_o.c;
+      lzc_o.data = v_i2f.mantissa_uint;
+      v_i2f.counter_uint = ~lzc_i.cnt;
 
       v_i2f.mantissa_uint = v_i2f.mantissa_uint << v_i2f.counter_uint;
 
@@ -334,23 +334,23 @@ module fpu_cvt #(
       v_i2f.mantissa_rnd = {1'h0, v_i2f.mantissa_uint[31:8]};
       v_i2f.grs = {v_i2f.mantissa_uint[7:6], |v_i2f.mantissa_uint[5:0]};
 
-      fp_cvt_i2f_o.fp_rnd.sig = v_i2f.sign_rnd;
-      fp_cvt_i2f_o.fp_rnd.expo = v_i2f.exponent_rnd;
-      fp_cvt_i2f_o.fp_rnd.mant = v_i2f.mantissa_rnd;
-      fp_cvt_i2f_o.fp_rnd.rema = 2'h0;
-      fp_cvt_i2f_o.fp_rnd.fmt = v_i2f.fmt;
-      fp_cvt_i2f_o.fp_rnd.rm = v_i2f.rm;
-      fp_cvt_i2f_o.fp_rnd.grs = v_i2f.grs;
-      fp_cvt_i2f_o.fp_rnd.snan = v_i2f.snan;
-      fp_cvt_i2f_o.fp_rnd.qnan = v_i2f.qnan;
-      fp_cvt_i2f_o.fp_rnd.dbz = v_i2f.dbz;
-      fp_cvt_i2f_o.fp_rnd.infs = v_i2f.infs;
-      fp_cvt_i2f_o.fp_rnd.zero = v_i2f.zero;
-      fp_cvt_i2f_o.fp_rnd.diff = 1'h0;
+      fp_cvt_i2f_o.fpu_rnd.sig = v_i2f.sign_rnd;
+      fp_cvt_i2f_o.fpu_rnd.expo = v_i2f.exponent_rnd;
+      fp_cvt_i2f_o.fpu_rnd.mant = v_i2f.mantissa_rnd;
+      fp_cvt_i2f_o.fpu_rnd.rema = 2'h0;
+      fp_cvt_i2f_o.fpu_rnd.fmt = v_i2f.fmt;
+      fp_cvt_i2f_o.fpu_rnd.rm = v_i2f.rm;
+      fp_cvt_i2f_o.fpu_rnd.grs = v_i2f.grs;
+      fp_cvt_i2f_o.fpu_rnd.snan = v_i2f.snan;
+      fp_cvt_i2f_o.fpu_rnd.qnan = v_i2f.qnan;
+      fp_cvt_i2f_o.fpu_rnd.dbz = v_i2f.dbz;
+      fp_cvt_i2f_o.fpu_rnd.infs = v_i2f.infs;
+      fp_cvt_i2f_o.fpu_rnd.zero = v_i2f.zero;
+      fp_cvt_i2f_o.fpu_rnd.diff = 1'h0;
 
     end
 
-    assign cvt_rnd_o = fp_cvt_i2f_o.fp_rnd ;
+    assign cvt_rnd_o = fp_cvt_i2f_o.fpu_rnd ;
 
     always_comb begin
       cvt_o = '0;

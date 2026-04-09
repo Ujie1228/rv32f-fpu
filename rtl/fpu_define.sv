@@ -198,12 +198,12 @@ package fpu_define;
 
     typedef struct packed {
       logic [31:0] data;
-      fp_operation_type op;
+      fpu_operation_type op;
       logic [2:0] rm;
     } fpu_cvt_i2f_in_type;
 
     typedef struct packed {
-      fpu_rnd_in_type rnd;
+      fpu_rnd_in_type fpu_rnd;
     } fpu_cvt_i2f_out_type;
 
     typedef struct packed {

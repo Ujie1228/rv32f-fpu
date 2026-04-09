@@ -35,9 +35,9 @@ module fpu_fma (
 
   always_comb begin
 
-    v_1.a = fpu_fma_i.data1;
-    v_1.b = fpu_fma_i.data2;
-    v_1.c = fpu_fma_i.data3;
+    v_1.a = fpu_fma_i.extend1;
+    v_1.b = fpu_fma_i.extend2;
+    v_1.c = fpu_fma_i.extend3;
     v_1.class_a = fpu_fma_i.class1;
     v_1.class_b = fpu_fma_i.class2;
     v_1.class_c = fpu_fma_i.class3;
@@ -207,8 +207,8 @@ module fpu_fma (
 
     v_2.bias = 126;
 
-    lzc_o.a = {v_2.mantissa_mac[75:0], {52{1'b1}}};
-    v_2.counter_mac = ~lzc_i.c;
+    lzc_o.data = {v_2.mantissa_mac[75:0], {52{1'b1}}};
+    v_2.counter_mac = ~lzc_i.cnt;
     v_2.mantissa_mac = v_2.mantissa_mac << v_2.counter_mac;
 
     v_2.sign_rnd = v_2.sign_mac;
