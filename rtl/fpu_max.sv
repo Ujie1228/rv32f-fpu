@@ -23,8 +23,8 @@ module fpu_max (
 
     data1 = fp_max_i.data1;
     data2 = fp_max_i.data2;
-    extend1 = fp_max_i.ext1;
-    extend2 = fp_max_i.ext2;
+    extend1 = fp_max_i.extend1;
+    extend2 = fp_max_i.extend2;
     rm = fp_max_i.rm;
     class1 = fp_max_i.class1;
     class2 = fp_max_i.class2;

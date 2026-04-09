@@ -19,8 +19,8 @@ module fpu_cmp (
 
   always_comb begin
 
-    data1 = fp_cmp_i.data1;
-    data2 = fp_cmp_i.data2;
+    data1 = fp_cmp_i.extend1;
+    data2 = fp_cmp_i.extend2;
     rm = fp_cmp_i.rm;
     class1 = fp_cmp_i.class1;
     class2 = fp_cmp_i.class2;

@@ -56,20 +56,20 @@ module fpu_misc(
 
     // fsgnj
     fpu_sgnj u_fpu_sgnj (
-        .sgnj_i(sgnj_i),
-        .sgnj_o(sgnj_o)
+        .fp_sgnj_i(sgnj_i),
+        .fp_sgnj_o(sgnj_o)
     );
 
     // fcmp
     fpu_cmp u_fpu_cmp (
-        .cmp_i(cmp_i),
-        .cmp_o(cmp_o)
+        .fp_cmp_i(cmp_i),
+        .fp_cmp_o(cmp_o)
     );
 
     // fmax
     fpu_max u_fpu_max (
-        .max_i(max_i),
-        .max_o(max_o)
+        .fp_max_i(max_i),
+        .fp_max_o(max_o)
     );
 
     // class
