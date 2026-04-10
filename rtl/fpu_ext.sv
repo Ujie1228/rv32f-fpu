@@ -5,8 +5,8 @@ module fpu_ext (
     input  logic [31:0] data_i,
     output logic [32:0] extend_o,
     output logic [9:0]  class_o,
-    input  lzc_32_out_type lzc_o,
-    output lzc_32_in_type  lzc_i
+    input  var lzc_32_out_type lzc_o,
+    output var lzc_32_in_type  lzc_i
 );
 
   logic [31:0] data;

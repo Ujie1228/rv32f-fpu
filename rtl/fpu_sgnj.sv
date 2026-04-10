@@ -1,8 +1,8 @@
 import fpu_define::*;
 
 module fpu_sgnj (
-    input  fpu_sgnj_in_type  fp_sgnj_i,
-    output fpu_sgnj_out_type fp_sgnj_o
+    input  var fpu_sgnj_in_type  fp_sgnj_i,
+    output var fpu_sgnj_out_type fp_sgnj_o
 );
 
     logic [31:0] data1;

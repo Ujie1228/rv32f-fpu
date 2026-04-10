@@ -1,8 +1,8 @@
 import fpu_define::*;
 
 module fpu_mac (
-    input  fpu_mac_in_type  mac_i,
-    output fpu_mac_out_type mac_o
+    input  var fpu_mac_in_type  mac_i,
+    output var fpu_mac_out_type mac_o
 );
 
   logic [51:0] add;

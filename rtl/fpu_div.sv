@@ -9,12 +9,12 @@ module fpu_div #(
     input logic div_stall_i,
     input logic div_start_i,
 
-    input  fpu_div_in_type  fpu_fdiv_i,
-    output fpu_div_out_type fpu_fdiv_o,
-    output fpu_div_reg_out  div_reg_o,
-    input  fpu_mac_out_type fpu_mac_o,
-    output fpu_mac_in_type  fpu_mac_i,
-    input  fpu_rnd_out_type div_rnd_i,
+    input  var fpu_div_in_type  fpu_fdiv_i,
+    output var fpu_div_out_type fpu_fdiv_o,
+    output var fpu_div_reg_out  div_reg_o,
+    input  var fpu_mac_out_type fpu_mac_o,
+    output var fpu_mac_in_type  fpu_mac_i,
+    input  var fpu_rnd_out_type div_rnd_i,
 
     output logic div_ready_o,
     output logic div_data_vld_o,

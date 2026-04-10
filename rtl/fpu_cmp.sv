@@ -1,8 +1,8 @@
 import fpu_define::*;
 
 module fpu_cmp (
-    input   fpu_cmp_in_type  fp_cmp_i,
-    output  fpu_cmp_out_type fp_cmp_o
+    input   var fpu_cmp_in_type  fp_cmp_i,
+    output  var fpu_cmp_out_type fp_cmp_o
 );
 
   logic [32:0] data1;

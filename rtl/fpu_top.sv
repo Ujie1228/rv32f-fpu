@@ -4,8 +4,8 @@ import lzc_define::*;
 module fpu_top (
     input   logic            clk_i,
     input   logic            rst_ni,
-    input   fpu_top_in_type  top_i,
-    output  fpu_top_out_type top_o
+    input   var fpu_top_in_type  top_i,
+    output  var fpu_top_out_type top_o
 );
 
     // lzc模块信号

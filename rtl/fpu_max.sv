@@ -1,8 +1,8 @@
 import fpu_define::*;
 
 module fpu_max (
-    input  fpu_max_in_type  fp_max_i,
-    output fpu_max_out_type fp_max_o
+    input  var fpu_max_in_type  fp_max_i,
+    output var fpu_max_out_type fp_max_o
 );
 
   logic [31:0] data1;

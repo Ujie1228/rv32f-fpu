@@ -6,9 +6,9 @@ module fpu_misc(
 
     input logic misc_stall_i,
     input logic misc_start_i,
-    input  fpu_misc_in_type  misc_reg_i,
+    input  var fpu_misc_in_type  misc_reg_i,
 
-    output fpu_misc_out_type misc_reg_o,
+    output var fpu_misc_out_type misc_reg_o,
     output logic misc_ready_o,
     output logic misc_data_vld_o
 );

@@ -1,8 +1,8 @@
 import fpu_define::*;
 
 module fpu_rnd (
-    input  fpu_rnd_in_type   rnd_i,
-    output fpu_rnd_out_type  rnd_o
+    input  var fpu_rnd_in_type   rnd_i,
+    output var fpu_rnd_out_type  rnd_o
 );
 
   logic sig;

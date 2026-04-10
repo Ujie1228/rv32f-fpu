@@ -13,7 +13,7 @@ module fpu_exe(
     input logic [32:0] class1_i,
     input logic [32:0] class2_i,
     input logic [32:0] class3_i,
-    input fpu_operation_type req_op_i,
+    input var fpu_operation_type req_op_i,
     input logic [3:0] op_class_i,
     input logic [2:0] req_rm_i,
     input logic [4:0] req_tag_i,
@@ -31,10 +31,10 @@ module fpu_exe(
     input logic cvt_stall_i,
     input logic fma_stall_i,
 
-    output fpu_fma_in_type  req_data_FMA_reg_o,
-    output fpu_div_in_type  req_data_DIV_reg_o,
-    output fpu_cvt_in_type  req_data_CVT_reg_o,
-    output fpu_misc_in_type req_data_MISC_reg_o,
+    output var fpu_fma_in_type  req_data_FMA_reg_o,
+    output var fpu_div_in_type  req_data_DIV_reg_o,
+    output var fpu_cvt_in_type  req_data_CVT_reg_o,
+    output var fpu_misc_in_type req_data_MISC_reg_o,
 
     output logic misc_start_o,
     output logic div_start_o,
@@ -42,10 +42,10 @@ module fpu_exe(
     output logic fma_start_o,
 
     input logic resp_ready_i,
-    input fpu_misc_out_type resp_misc_reg_i,
-    input fpu_div_reg_out   resp_div_reg_i,
-    input fpu_cvt_out_type  resp_cvt_reg_i,
-    input fpu_fma_reg_out   resp_fma_reg_i,
+    input var fpu_misc_out_type resp_misc_reg_i,
+    input var fpu_div_reg_out   resp_div_reg_i,
+    input var fpu_cvt_out_type  resp_cvt_reg_i,
+    input var fpu_fma_reg_out   resp_fma_reg_i,
 
     input logic  misc_data_vld_i,
     input logic  div_data_vld_i,

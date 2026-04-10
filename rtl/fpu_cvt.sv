@@ -10,12 +10,12 @@ module fpu_cvt #(
     input logic cvt_stall_i,
     input logic cvt_start_i,
     
-    input   fpu_cvt_in_type  cvt_reg_i,
-    output  fpu_cvt_out_type cvt_reg_o,
-    input   lzc_32_out_type  lzc_i,
-    output  lzc_32_in_type   lzc_o,
-    input   fpu_rnd_out_type cvt_rnd_i,
-    output  fpu_rnd_in_type  cvt_rnd_o,
+    input   var fpu_cvt_in_type  cvt_reg_i,
+    output  var fpu_cvt_out_type cvt_reg_o,
+    input   var lzc_32_out_type  lzc_i,
+    output  var lzc_32_in_type   lzc_o,
+    input   var fpu_rnd_out_type cvt_rnd_i,
+    output  var fpu_rnd_in_type  cvt_rnd_o,
 
     output logic cvt_ready_o,
     output logic cvt_data_vld_o

@@ -8,13 +8,13 @@ module fpu_fma (
     input logic fma_stall_i,
     input logic fma_start_i,
 
-    input  fpu_fma_in_type fpu_fma_i,
-    output fpu_fma_out_type fpu_fma_o,
-    output fpu_fma_reg_out fma_reg_o,
-    input  fpu_rnd_out_type fma_rnd_i,
+    input  var fpu_fma_in_type fpu_fma_i,
+    output var fpu_fma_out_type fpu_fma_o,
+    output var fpu_fma_reg_out fma_reg_o,
+    input  var fpu_rnd_out_type fma_rnd_i,
 
-    input lzc_128_out_type lzc_i,
-    output lzc_128_in_type lzc_o,
+    input  var lzc_128_out_type lzc_i,
+    output var lzc_128_in_type  lzc_o,
 
     output logic fma_ready_o,
     output logic fma_data_vld_o,
