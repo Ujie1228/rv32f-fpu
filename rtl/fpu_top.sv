@@ -172,7 +172,7 @@ module fpu_top (
     );
 
     fpu_ext u3_fpu_ext (
-        .data_i   (top_i.req_data2_i),
+        .data_i   (top_i.req_data3_i),
         .extend_o (extend3),
         .class_o  (class3),
         .lzc_o    (lzc3_32_o),
@@ -298,7 +298,7 @@ module fpu_top (
         .div_rnd_i          ( div_rnd_o          ),
         .div_ready_o        ( div_ready_i        ),
         .div_data_vld_o     ( div_data_vld_i     ),
-        .div_reg_empty_i    ( div_reg_empty_o    )
+        .div_reg_empty_i    ( div_reg_empty_i    )
     );
 
     fpu_mac u_fpu_mac(
