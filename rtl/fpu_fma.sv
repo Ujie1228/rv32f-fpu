@@ -22,14 +22,17 @@ module fpu_fma (
     input clear     // 暂不用
 );
 
-  fpu_fma_reg_type_1 r_1;
-  fpu_fma_reg_type_2 r_2;
+  fpu_fma_reg_type_1   r_1;
+  fpu_fma_reg_type_mac r_2;
+  fpu_fma_reg_type_2   r_3;
 
-  fpu_fma_reg_type_1 rin_1;
-  fpu_fma_reg_type_2 rin_2;
+  fpu_fma_reg_type_1   rin_1;
+  fpu_fma_reg_type_mac rin_2;
+  fpu_fma_reg_type_2   rin_3;
 
-  fpu_fma_var_type_1 v_1;
-  fpu_fma_var_type_2 v_2;
+  fpu_fma_var_type_1   v_1;
+  fpu_fma_var_type_mac v_2;
+  fpu_fma_var_type_2   v_3;
 
   assign fma_ready_o = ~fma_stall_i;
 
@@ -176,6 +179,10 @@ module fpu_fma (
     v_2.exponent_add = r_1.exponent_add;
     v_2.mantissa_add = r_1.mantissa_add;
     v_2.exponent_neg = r_1.exponent_neg;
+    v_2.sign_mac     = 0;
+    v_2.exponent_mac = 0;
+    v_2.mantissa_mac = 0;
+    v_2.diff         = 0;
     v_2.ready        = r_1.ready;
     v_2.tag          = r_1.tag;
 
@@ -205,45 +212,21 @@ module fpu_fma (
 
     v_2.diff = v_2.sign_add ^ v_2.sign_mul;
 
-    v_2.bias = 126;
-
-    lzc_o.data = {v_2.mantissa_mac[75:0], {52{1'b1}}};
-    v_2.counter_mac = ~lzc_i.cnt;
-    v_2.mantissa_mac = v_2.mantissa_mac << v_2.counter_mac;
-
-    v_2.sign_rnd = v_2.sign_mac;
-    v_2.exponent_rnd = v_2.exponent_mac - {3'h0, v_2.bias} - {4'h0, v_2.counter_mac};
-
-    v_2.counter_sub = 0;
-    if ($signed(v_2.exponent_rnd) <= 0) begin
-      v_2.counter_sub = 63;
-      if ($signed(v_2.exponent_rnd) > -63) begin
-        v_2.counter_sub = 11'h1 - v_2.exponent_rnd;
-      end
-      v_2.exponent_rnd = 0;
-    end
-
-    v_2.mantissa_mac = v_2.mantissa_mac >> v_2.counter_sub[5:0];
-
-    v_2.mantissa_rnd = {1'h0, v_2.mantissa_mac[75:52]};
-    v_2.grs = {v_2.mantissa_mac[51:50], |v_2.mantissa_mac[49:0]};
-
     if (clear == 1) begin
       v_2.ready = 0;
     end
 
-    rin_2.sign_rnd = v_2.sign_rnd;
-    rin_2.exponent_rnd = v_2.exponent_rnd;
-    rin_2.mantissa_rnd = v_2.mantissa_rnd;
     rin_2.fmt = v_2.fmt;
     rin_2.rm = v_2.rm;
-    rin_2.grs = v_2.grs;
     rin_2.snan = v_2.snan;
     rin_2.qnan = v_2.qnan;
     rin_2.dbz = v_2.dbz;
     rin_2.infs = v_2.infs;
-    rin_2.diff = v_2.diff;
     rin_2.zero = v_2.zero;
+    rin_2.diff = v_2.diff;
+    rin_2.sign_mac = v_2.sign_mac;
+    rin_2.exponent_mac = v_2.exponent_mac;
+    rin_2.mantissa_mac = v_2.mantissa_mac;
     rin_2.ready = v_2.ready;
     rin_2.tag = v_2.tag;
 
@@ -251,36 +234,104 @@ module fpu_fma (
 
   always_comb begin
 
-    fpu_fma_o.fpu_rnd.sig = r_2.sign_rnd;
-    fpu_fma_o.fpu_rnd.expo = r_2.exponent_rnd;
-    fpu_fma_o.fpu_rnd.mant = r_2.mantissa_rnd;
+    v_3.fmt          = r_2.fmt;
+    v_3.rm           = r_2.rm;
+    v_3.snan         = r_2.snan;
+    v_3.qnan         = r_2.qnan;
+    v_3.dbz          = r_2.dbz;
+    v_3.infs         = r_2.infs;
+    v_3.zero         = r_2.zero;
+    v_3.diff         = r_2.diff;
+    v_3.sign_mac     = r_2.sign_mac;
+    v_3.exponent_mac = r_2.exponent_mac;
+    v_3.mantissa_mac = r_2.mantissa_mac;
+    v_3.counter_mac  = 0;
+    v_3.counter_sub  = 0;
+    v_3.bias         = 126;
+    v_3.sign_rnd     = 0;
+    v_3.exponent_rnd = 0;
+    v_3.mantissa_rnd = 0;
+    v_3.grs          = 0;
+    v_3.ready        = r_2.ready;
+    v_3.tag          = r_2.tag;
+
+    lzc_o.data = {v_3.mantissa_mac[75:0], {52{1'b1}}};
+    v_3.counter_mac = ~lzc_i.cnt;
+    v_3.mantissa_mac = v_3.mantissa_mac << v_3.counter_mac;
+
+    v_3.sign_rnd = v_3.sign_mac;
+    v_3.exponent_rnd = v_3.exponent_mac - {3'h0, v_3.bias} - {4'h0, v_3.counter_mac};
+
+    v_3.counter_sub = 0;
+    if ($signed(v_3.exponent_rnd) <= 0) begin
+      v_3.counter_sub = 63;
+      if ($signed(v_3.exponent_rnd) > -63) begin
+        v_3.counter_sub = 11'h1 - v_3.exponent_rnd;
+      end
+      v_3.exponent_rnd = 0;
+    end
+
+    v_3.mantissa_mac = v_3.mantissa_mac >> v_3.counter_sub[5:0];
+
+    v_3.mantissa_rnd = {1'h0, v_3.mantissa_mac[75:52]};
+    v_3.grs = {v_3.mantissa_mac[51:50], |v_3.mantissa_mac[49:0]};
+
+    if (clear == 1) begin
+      v_3.ready = 0;
+    end
+
+    rin_3.sign_rnd = v_3.sign_rnd;
+    rin_3.exponent_rnd = v_3.exponent_rnd;
+    rin_3.mantissa_rnd = v_3.mantissa_rnd;
+    rin_3.fmt = v_3.fmt;
+    rin_3.rm = v_3.rm;
+    rin_3.grs = v_3.grs;
+    rin_3.snan = v_3.snan;
+    rin_3.qnan = v_3.qnan;
+    rin_3.dbz = v_3.dbz;
+    rin_3.infs = v_3.infs;
+    rin_3.diff = v_3.diff;
+    rin_3.zero = v_3.zero;
+    rin_3.ready = v_3.ready;
+    rin_3.tag = v_3.tag;
+
+  end
+
+  always_comb begin
+
+    fpu_fma_o.fpu_rnd.sig = r_3.sign_rnd;
+    fpu_fma_o.fpu_rnd.expo = r_3.exponent_rnd;
+    fpu_fma_o.fpu_rnd.mant = r_3.mantissa_rnd;
     fpu_fma_o.fpu_rnd.rema = 2'h0;
-    fpu_fma_o.fpu_rnd.fmt = r_2.fmt;
-    fpu_fma_o.fpu_rnd.rm = r_2.rm;
-    fpu_fma_o.fpu_rnd.grs = r_2.grs;
-    fpu_fma_o.fpu_rnd.snan = r_2.snan;
-    fpu_fma_o.fpu_rnd.qnan = r_2.qnan;
-    fpu_fma_o.fpu_rnd.dbz = r_2.dbz;
-    fpu_fma_o.fpu_rnd.infs = r_2.infs;
-    fpu_fma_o.fpu_rnd.zero = r_2.zero;
-    fpu_fma_o.fpu_rnd.diff = r_2.diff;
-    fpu_fma_o.ready = r_2.ready;
-    fpu_fma_o.tag = r_2.tag;
+    fpu_fma_o.fpu_rnd.fmt = r_3.fmt;
+    fpu_fma_o.fpu_rnd.rm = r_3.rm;
+    fpu_fma_o.fpu_rnd.grs = r_3.grs;
+    fpu_fma_o.fpu_rnd.snan = r_3.snan;
+    fpu_fma_o.fpu_rnd.qnan = r_3.qnan;
+    fpu_fma_o.fpu_rnd.dbz = r_3.dbz;
+    fpu_fma_o.fpu_rnd.infs = r_3.infs;
+    fpu_fma_o.fpu_rnd.zero = r_3.zero;
+    fpu_fma_o.fpu_rnd.diff = r_3.diff;
+    fpu_fma_o.ready = r_3.ready;
+    fpu_fma_o.tag = r_3.tag;
 
   end
 
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if (~rst_ni) begin
       r_1 <= init_fpu_fma_reg_1;
-      r_2 <= init_fpu_fma_reg_2;
+      r_2 <= init_fpu_fma_reg_mac;
+      r_3 <= init_fpu_fma_reg_2;
     end else if (fma_stall_i) begin
       r_1 <= r_1;
       r_2 <= r_2;
+      r_3 <= r_3;
       fma_reg_o <= fma_reg_o;
       fma_data_vld_o <= fma_data_vld_o;
     end else begin
       r_1 <= rin_1;
       r_2 <= rin_2;
+      r_3 <= rin_3;
       if (fpu_fma_o.ready) begin
         fma_reg_o.result <= fma_rnd_i.result;
         fma_reg_o.flags <= fma_rnd_i.flags;

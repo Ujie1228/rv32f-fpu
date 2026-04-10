@@ -596,4 +596,60 @@ package fpu_define;
       ready : 0
     };
 
+    // fma 增添
+    typedef struct packed {
+      logic [1:0] fmt;
+      logic [2:0] rm;
+      logic snan;
+      logic qnan;
+      logic dbz;
+      logic infs;
+      logic zero;
+      logic diff;
+      logic sign_mac;
+      logic [10:0] exponent_mac;
+      logic [76:0] mantissa_mac;
+      logic ready;
+      logic [4:0]  tag;
+    } fpu_fma_reg_type_mac;
+
+    parameter fpu_fma_reg_type_mac init_fpu_fma_reg_mac = '{
+        fmt : 0,
+        rm : 0,
+        snan : 0,
+        qnan : 0,
+        dbz : 0,
+        infs : 0,
+        zero : 0,
+        diff : 0,
+        sign_mac : 0,
+        exponent_mac : 0,
+        mantissa_mac : 0,
+        ready : 0,
+        tag : 0
+    };
+
+    typedef struct packed {
+      logic [1:0] fmt;
+      logic [2:0] rm;
+      logic snan;
+      logic qnan;
+      logic dbz;
+      logic infs;
+      logic zero;
+      logic diff;
+      logic sign_mul;
+      logic [10:0] exponent_mul;
+      logic [76:0] mantissa_mul;
+      logic sign_add;
+      logic [10:0] exponent_add;
+      logic [76:0] mantissa_add;
+      logic exponent_neg;
+      logic sign_mac;
+      logic [10:0] exponent_mac;
+      logic [76:0] mantissa_mac;
+      logic ready;
+      logic [4:0]  tag;
+    } fpu_fma_var_type_mac;
+
 endpackage
