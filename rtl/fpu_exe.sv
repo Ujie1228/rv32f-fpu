@@ -166,10 +166,12 @@ module fpu_exe(
     // 输出控制 & empty 设置优先级
 
     always_comb begin
-        misc_reg_empty_o = 1'b1; //默认值
-        div_reg_empty_o = 1'b1;
-        cvt_reg_empty_o = 1'b1;
-        fma_reg_empty_o = 1'b1;
+      
+        misc_reg_empty_o = ~misc_data_vld_i;
+        div_reg_empty_o  = ~div_data_vld_i;
+        cvt_reg_empty_o  = ~cvt_data_vld_i;
+        fma_reg_empty_o  = ~fma_data_vld_i;
+
         if (resp_ready_i) begin
             if (misc_data_vld_i) begin
                 misc_reg_empty_o = 1'b1;
@@ -179,19 +181,6 @@ module fpu_exe(
                 cvt_reg_empty_o = 1'b1;
             end else if (fma_data_vld_i) begin
                 fma_reg_empty_o = 1'b1;
-            end
-        end else if (~resp_ready_i) begin
-            if (misc_data_vld_i) begin
-                misc_reg_empty_o = 1'b0;
-            end
-            if (div_data_vld_i) begin
-                div_reg_empty_o = 1'b0;
-            end
-            if (cvt_data_vld_i) begin
-                cvt_reg_empty_o = 1'b0;
-            end
-            if (fma_data_vld_i) begin
-                fma_reg_empty_o = 1'b0;    
             end
         end
     end
