@@ -1,53 +1,50 @@
-# rv32f_fpu
+# Floating-Point Unit (FPU) Hardware Architecture
 
-This floating point unit is written in **SystemVerilog** and conforms to IEEE 754-2008 standards. It has been developed into a complete **RISC-V RV32F FPU subsystem**, featuring integrated instruction decoding, a dedicated floating-point register file (FPRF), and a control/status register (FCSR) for accrued exceptions and dynamic rounding.
+This project implements a high-performance, modular, 32-bit Floating-Point Unit (FPU) written in SystemVerilog. The FPU is designed with parallel pipeline execution and supports standard IEEE 754 floating-point operations. It features a robust Valid/Ready handshake protocol, a comprehensive pipeline stall (backpressure) mechanism, and hardware-level support for subnormal numbers.
 
-Supported operations are **compare**, **min-max**, **conversions**, **addition**, **subtraction**, **multiplication**, **fused multiply add**, **square root** and **division** in 32-bit single precision. Except **square root** and **division** all operations are pipelined.
+## Architecture Diagram
 
-### Pseudo Extended Precision Architecture
-This floating-point unit (FPU) internally converts the standard 32-bit single-precision format into a 33-bit pseudo-extended precision format. The primary advantage of this implementation is reduced hardware resource utilization, as it avoids introducing complex subnormal number extension logic throughout the pipeline. As a result, all floating-point numbers (including subnormals) are treated as normalized numbers within the datapath.
+![FPU Architecture Diagram](./fpu.png)
 
-|        | sign | exponent | mantissa |
-|:------:|:----:|:--------:|:--------:|
-| single | 1    | 8        | 23       |
-| pseudo | 1    | 9        | 23       |
+## Core Design Philosophy & Features
 
-## PROJECT STRUCTURE
+### 1. Standard Handshake & Backpressure Protocol
+The communication between the FPU and the host CPU utilizes a standard `Valid/Ready` protocol:
+* **Input (Request):** The CPU asserts `req_valid_i` to dispatch an instruction, and the FPU asserts `req_ready_o` when it is ready to accept new data.
+* **Output (Response):** Once computation is complete, the FPU asserts `resp_valid_o`. The CPU asserts `resp_ready_i` when it is ready to capture the result.
+* **Stall Mechanism:** Governed by the `Control` module, the FPU dynamically monitors the `empty` and `busy` states of all internal registers. If the downstream CPU is not ready (`resp_ready_i == 0`), the control unit issues localized `stall` signals to prevent internal data from being overwritten, ensuring zero data loss.
 
-The repository is organized as follows to separate synthesizable RTL, verification environments, and utility scripts.The core architecture is decoupled into a control/state wrapper (fpu_subsystem) and a pure arithmetic datapath (fpu_top).
+### 2. EXT Preprocessing & Subnormal Handling
+Before routing to the arithmetic modules, incoming 32-bit floating-point operands are unpacked by the **`EXT` (Extension) module**.
+* **33-bit Expansion:** The operands are expanded into a 33-bit internal format by adding 1 extra exponent bit.
+* **Subnormal Support:** This expansion seamlessly normalizes subnormal numbers by shifting the implicit leading bit. Consequently, downstream modules (FMA, DIV) do not require complex edge-case logic to handle subnormals, significantly optimizing timing and area.
+* The EXT module also generates classification flags (`class`) to quickly identify special values like NaN, Infinity, and Zero.
 
-```text
-rv32f_fpu/
-├── README.md               # Project documentation
-├── LICENSE                 # Open-source license
-├── Makefile                # Master Makefile for simulation and building
-├── rtl/                    # Synthesizable SystemVerilog core design files
-│   ├── lzc/                # Leading Zero Count (LZC) directory
-│   │   ├── lzc_4.sv        # 4-bit Leading Zero Counter
-│   │   ├── lzc_8.sv        # 8-bit Leading Zero Counter
-│   │   ├── lzc_16.sv       # 16-bit Leading Zero Counter
-│   │   └── lzc_32.sv       # 32-bit Leading Zero Counter (for FPU mantissa alignment)
-│   ├── fcsr.sv             # Floating-Point Control and Status Register (Accrued flags & FRM)
-│   ├── fprf.sv             # 32x32-bit Floating-Point Register File (f0-f31)
-│   ├── fpu_class.sv        # Floating-point classification & 33-bit pseudo extended precision converter
-│   ├── fpu_cmp.sv          # Comparison operations unit (fcmp)
-│   ├── fpu_cvt.sv          # Data type conversion unit (fcvt: float <-> int/uint)
-│   ├── fpu_decoder.sv      # RV32F instruction decoder (Translates 32-bit opcodes to datapath signals)
-│   ├── fpu_div_sqrt.sv     # Division and square root iterative unit (fdiv, fsqrt)
-│   ├── fpu_fma.sv          # Fused multiply-add unit (also handles fadd, fsub, and fmul)
-│   ├── fpu_mac.sv          # Multiply-accumulate unit for internal FPU operations
-│   ├── fpu_max.sv          # Min/Max operations unit (fmin, fmax)
-│   ├── fpu_rnd.sv          # Rounding logic and execution module
-│   ├── fpu_sgnj.sv         # Sign injection unit (fsgnj, fsgnjn, fsgnjx)
-│   ├── fpu_subsystem.sv    # Top-level FPU subsystem (Integrates Decoder, FPRF, FCSR, and Datapath)
-│   ├── fpu_top.sv          # FPU arithmetic datapath top module
-│   └── fpu_wire.sv         # Common definitions: FPU structs, interfaces, wires, parameters
-├── tb/                     # Testbench and verification environment
-│   ├── tb_fpu_subsystem.sv # Top-level subsystem simulation testbench (Updated)
-│   └── test_vectors/       # Auto-generated IEEE 754 standard test vectors
-├── scripts/                # Automation and utility scripts
-│   ├── generate_tests.py   # Script to generate test cases and expected results
-│   └── sim.do              # EDA tool simulation scripts (e.g., ModelSim TCL)
-└── docs/                   # Additional documentation and diagrams
-    ├── architecture.md     # Microarchitecture and algorithm details
-    └── fpu_pipeline.svg    # FPU datapath and pipeline architecture diagram
+### 3. Parallel Pipeline Execution Units
+The computational core is partitioned into four independent, parallel execution units. The `EXE` dispatch module routes operands to the appropriate unit based on the decoded `op` field:
+
+* **FMA (Fused Multiply-Add):** The primary arithmetic engine. Utilizing a 128-bit Leading Zero Counter (LZC) for high-precision intermediate calculations, it executes:
+  * Standard arithmetic: `fadd`, `fsub`, `fmul`
+  * Fused operations: `fmadd` (add), `fmsub` (subtract), `fnmadd` (negated add), `fnmsub` (negated subtract).
+* **DIV (Division & Sqrt):** A multi-cycle iterative unit responsible for `fdiv` and `fsqrt`. It utilizes a Multiply-Accumulate (`fpu_mac`) helper block and manages an internal `div_busy` flag to halt new dispatches until the iteration completes.
+* **CVT (Convert):** Handles format conversions using 32-bit LZCs to shift and normalize integers into floats (`fcvt_i2f`), and floats back to integers (`fcvt_f2i`).
+* **MISC (Miscellaneous):** A fast, single-cycle unit processing sign-injections (`fsgnj`), floating-point comparisons (`fcmp`), min/max selections (`fmin`/`fmax`), and floating-point classifications (`fclass`).
+
+### 4. Smart Output Arbitration & Priority
+Because the internal execution units possess varying latencies (e.g., MISC is single-cycle, DIV is multi-cycle), multiple units may finish their computations in the exact same clock cycle.
+* The `EXE` module implements a **fixed-priority arbiter**.
+* In the event of a collision, output is prioritized as follows: **`MISC > DIV > CVT > FMA`**.
+* Lower-priority units that lose the arbitration are safely held back via stall signals from the `Control` module until the data bus is free.
+
+### 5. Dedicated IEEE 754 Rounding
+To ensure strict IEEE 754 compliance, dedicated rounding hardware blocks (`fpu_rnd`) are attached to the outputs of the FMA, DIV, and CVT units. These guarantee accurate rounding modes before the final 32-bit result is packed and committed.
+
+## File Structure
+
+* **`fpu_top.sv`**: The top-level wrapper instantiating all sub-modules and exposing the main I/O bus.
+* **`fpu_ext.sv`**: Data extension logic (32 to 33-bit conversion) and IEEE classification.
+* **`fpu_exe.sv`**: The central dispatcher and output arbiter. Generates `start` triggers and resolves output collisions.
+* **`fpu_control.sv`**: The global state machine managing backpressure, stalling logic, and the `div_busy` synchronization.
+* **`fpu_fma.sv` / `fpu_div.sv` / `fpu_cvt.sv` / `fpu_misc.sv`**: The specific arithmetic and logic execution pipelines.
+* **`fpu_rnd.sv`**: Standalone IEEE rounding instances.
+* **`lzc_32.sv` / `lzc_128.sv`**: Leading Zero Counters used for mantissa normalization and alignment.
