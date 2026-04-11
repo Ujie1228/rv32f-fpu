@@ -1,0 +1,278 @@
+G:/FPU/rv32f_fpu/rtl/lzc/lzc_64.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/lzc/lzc_64.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling module lzc_64
+
+Top level modules:
+	lzc_64
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/fpu_mac.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/fpu_mac.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package fpu_mac_sv_unit
+-- Importing package fpu_define
+-- Compiling module fpu_mac
+
+Top level modules:
+	fpu_mac
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/lzc/lzc_128.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/lzc/lzc_128.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling module lzc_128
+
+Top level modules:
+	lzc_128
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/fpu_sgnj.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/fpu_sgnj.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package fpu_sgnj_sv_unit
+-- Importing package fpu_define
+-- Compiling module fpu_sgnj
+
+Top level modules:
+	fpu_sgnj
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/fpu_exe.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/fpu_exe.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package fpu_exe_sv_unit
+-- Importing package fpu_define
+-- Compiling module fpu_exe
+
+Top level modules:
+	fpu_exe
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/lzc/lzc_4.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/lzc/lzc_4.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling module lzc_4
+
+Top level modules:
+	lzc_4
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/fpu_top.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/fpu_top.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package fpu_top_sv_unit
+-- Importing package fpu_define
+-- Importing package lzc_define
+-- Compiling module fpu_top
+
+Top level modules:
+	fpu_top
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/fpu_rnd.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/fpu_rnd.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package fpu_rnd_sv_unit
+-- Importing package fpu_define
+-- Compiling module fpu_rnd
+
+Top level modules:
+	fpu_rnd
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/fpu_misc.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/fpu_misc.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package fpu_misc_sv_unit
+-- Importing package fpu_define
+-- Compiling module fpu_misc
+
+Top level modules:
+	fpu_misc
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv {2 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package fpu_cvt_sv_unit
+-- Importing package lzc_define
+-- Importing package fpu_define
+-- Compiling module fpu_cvt
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(58): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(59): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(60): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(61): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(63): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(64): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(66): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(67): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(68): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(69): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(72): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(74): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(77): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(78): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(79): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(82): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(85): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(88): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(90): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(93): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(95): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(96): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(98): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(100): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(103): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(107): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(111): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(115): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(119): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(121): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(122): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(123): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(125): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(127): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(128): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(132): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(134): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(137): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(140): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(141): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(144): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(148): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(150): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(151): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(154): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(156): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(157): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(161): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(162): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(172): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(173): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(174): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(175): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(177): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(178): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(180): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(181): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(182): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(183): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(186): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(188): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(191): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(192): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(193): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(196): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(199): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(202): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(204): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(207): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(209): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(210): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(212): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(214): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(217): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(221): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(225): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(229): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(233): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(235): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(236): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(237): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(239): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(241): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(242): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(246): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(248): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(251): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(254): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(255): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(258): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(262): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(264): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(265): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(268): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(273): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(275): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(276): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(280): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(285): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: G:/FPU/rv32f_fpu/rtl/fpu_cvt.sv(286): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+
+Top level modules:
+	fpu_cvt
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/lzc/lzc_8.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/lzc/lzc_8.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling module lzc_8
+
+Top level modules:
+	lzc_8
+
+} {} {}} G:/FPU/rv32f_fpu/tb/tb_fpu32.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/tb/tb_fpu32.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package tb_fpu32_sv_unit
+-- Importing package fpu_define
+-- Compiling module tb_fpu_top
+
+Top level modules:
+	tb_fpu_top
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/fpu_cmp.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/fpu_cmp.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package fpu_cmp_sv_unit
+-- Importing package fpu_define
+-- Compiling module fpu_cmp
+
+Top level modules:
+	fpu_cmp
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/fpu_ext.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/fpu_ext.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package fpu_ext_sv_unit
+-- Importing package fpu_define
+-- Importing package lzc_define
+-- Compiling module fpu_ext
+
+Top level modules:
+	fpu_ext
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/lzc/lzc_define.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/lzc/lzc_define.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package lzc_define
+
+Top level modules:
+	--none--
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/fpu_control.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/fpu_control.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package fpu_control_sv_unit
+-- Importing package fpu_define
+-- Compiling module fpu_control
+
+Top level modules:
+	fpu_control
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/lzc/lzc_32.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/lzc/lzc_32.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling module lzc_32
+
+Top level modules:
+	lzc_32
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/fpu_define.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/fpu_define.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package fpu_define
+
+Top level modules:
+	--none--
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/fpu_fma.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/fpu_fma.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package fpu_fma_sv_unit
+-- Importing package lzc_define
+-- Importing package fpu_define
+-- Compiling module fpu_fma
+
+Top level modules:
+	fpu_fma
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/lzc/lzc_16.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/lzc/lzc_16.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling module lzc_16
+
+Top level modules:
+	lzc_16
+
+} {} {}} G:/FPU/rv32f_fpu/rtl/fpu_max.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/fpu_max.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package fpu_max_sv_unit
+-- Importing package fpu_define
+-- Compiling module fpu_max
+
+Top level modules:
+	fpu_max
+
+} {} {}}
