@@ -46,6 +46,15 @@ Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb 
 Top level modules:
 	lzc_4
 
+} {} {}} G:/FPU/rv32f_fpu/rtl/fpu_div.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/fpu_div.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling package fpu_div_sv_unit
+-- Importing package fpu_define
+-- Compiling module fpu_div
+
+Top level modules:
+	fpu_div
+
 } {} {}} G:/FPU/rv32f_fpu/rtl/fpu_top.sv {1 {vlog -work work -sv -stats=none G:/FPU/rv32f_fpu/rtl/fpu_top.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
 -- Compiling package fpu_top_sv_unit
