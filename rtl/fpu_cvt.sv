@@ -278,6 +278,9 @@ module fpu_cvt #(
             if (v_f2i.sign_cvt) begin
               if (~(v_f2i.snan | v_f2i.qnan)) begin
                 v_f2i.result = 32'h00000000;
+                if (~v_f2i.zero) begin
+                  v_f2i.flags = 5'b10000; 
+                end
               end
             end
           end
