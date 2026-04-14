@@ -55,7 +55,7 @@ module tb_fpu_fma;
   // --------------------------------------------------------------------------
   task automatic clear_req();
     top_i.req_valid_i = 1'b0;
-    top_i.req_op_i    = '0;
+    //top_i.req_op_i    = '0;
     top_i.req_data1_i = '0;
     top_i.req_data2_i = '0;
     top_i.req_data3_i = '0;

@@ -265,7 +265,7 @@ module tb_fpu_top;
       top_i.req_valid_i = 1'b0;
 
       // Clear request payload after handshake.
-      top_i.req_op_i    = '0;
+      //top_i.req_op_i    = '0;
       top_i.req_data1_i = '0;
       top_i.req_data2_i = '0;
       top_i.req_data3_i = '0;
